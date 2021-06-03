@@ -1,9 +1,12 @@
 import Moveable from "react-moveable";
 
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import frame from "./frame.svg"
 import dragImage from "./dragImage.png"
 import dragImageWarning from "./dragImageWarning.png"
+
+import Store from "./state/store"
+import {Context} from "./state/store"
 
 import useStateRef from 'react-usestateref'
 
@@ -18,6 +21,8 @@ export function ToolBar({ children }) {
 }
 
 export function ToolBarElement({ children, id }) {
+
+
 
   return (
     <div
@@ -62,7 +67,11 @@ export function ToolBarElementForContiner({ children, id }) {
 }
 
 
-export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, ContainerClassName , gridItems, setGridItems}) {
+export function NonRootContainer({ w, h, x, y, id, containerName}) {
+
+  const [state, dispatch] = useContext(Context);
+
+  let gridUnit = Number(state.rootContainer.gridUnit);
 
   // - When A Child is inside of a Non-root parent Container
   // - It Should move with the parent 
@@ -74,9 +83,7 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
   const [target, setTarget] = React.useState();
   const [container, setContainer] = React.useState();
 
-  React.useEffect(() => {
-    
-  }, [gridItems.length])
+
 
   const [frame, setFrame] = React.useState({
     translate: [0, 0],
@@ -89,9 +96,9 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
   const [dragDirection, setDragDirection] = useState([0,0])
 
   React.useEffect(() => {
-    console.log(id, x , y)
+    console.log(gridUnit)
     setTarget(document.querySelector(`#${id}`));
-    setContainer(document.querySelector(`.${ContainerName}`))
+    setContainer(document.querySelector(`.${containerName}`))
   }, []);
 
   return (
@@ -106,7 +113,7 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
           top: `${y * gridUnit}px`,
           left: `${x * gridUnit}px`
         }}
-        className={ContainerClassName}
+        className={id}
         id={id}
         onClick={() => { setActivateDrag(!activateDrag) }}
       >
@@ -147,7 +154,7 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
           
           e => {
 
-            let container = document.querySelector(`.${ContainerName}`);
+            let container = document.querySelector(`.${containerName}`);
             let containerY = container.getBoundingClientRect().y
 
             let yPostion = e.target.getBoundingClientRect().top - containerY;
@@ -170,11 +177,7 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
              snappedXPos / gridUnit,
              snappedYPos / gridUnit)
 
-            
-          console.log(gridItems)
-
-
-            
+          
             
           }
         
@@ -256,6 +259,8 @@ export function NonRootContainer({ w, h, gridUnit, x, y, id, ContainerName, Cont
 
 export function RootContainer({ children, ContainerName }) {
 
+  const [state, dispatch] = useContext(Context);
+
   const [renderItems, setRenderItems] = useStateRef([])
 
   const [update, setUpdate] = React.useState(false)
@@ -280,6 +285,11 @@ export function RootContainer({ children, ContainerName }) {
     console.log(gridItems)
     
   }, [update])
+
+  React.useEffect(() => {
+    console.log(state, "State")
+
+  },[])
 
   const handleDragEnter = e => {
     e.preventDefault();
@@ -346,6 +356,27 @@ export function RootContainer({ children, ContainerName }) {
     e.stopPropagation();
   };
 
+  let renderArray = [];
+  
+  Object.keys(state.nonRootContainers).forEach(
+    (keyy) => {
+        //console.log(state.nonRootContainers[keyy])
+        let {id, x, y , w, h , containerName} = state.nonRootContainers[keyy];
+        let item =   <NonRootContainer
+        key = {id}                            //   id = {id}
+        id = {id}
+        x = {x}
+        y = {y}
+        w = {w}
+        h = {h}
+        ContainerClassName = {id}
+        ContainerName = {containerName}
+      />
+        renderArray.push(item)
+        
+    }
+  )
+
   return (
     <>
       <ToolBar />
@@ -358,19 +389,7 @@ export function RootContainer({ children, ContainerName }) {
         onDragLeave={e => handleDragLeave(e)}
       >
         {
-          gridItems.map( ({x,y,w,h,gridUnit,key,id,ContainerName, ContainerClassName, gridItems, setGridItems}) => <NonRootContainer
-            id = {id}
-            key = {key}
-            x = {x}
-            y = {y}
-            w = {w}
-            h = {h}
-            ContainerClassName = {ContainerClassName}
-            ContainerName = {ContainerName}
-            gridUnit = {gridUnit}
-            gridItems = {gridItems}
-            setGridItems = {setGridItems}
-          />)
+            renderArray
         }
       </div>
     </>
@@ -383,7 +402,9 @@ function App() {
 
 
   return (
-    <RootContainer ContainerName="RootContainer" />
+    <Store>
+      <RootContainer ContainerName="RootContainer" />
+    </Store>
   )
 }
 
