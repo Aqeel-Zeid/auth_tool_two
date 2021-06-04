@@ -3,19 +3,10 @@ import Reducer from "./reducer.js";
 
 const initialState = {
   rootContainer : {
-    gridUnit: 48 ,
+    gridUnit: 8 ,
     containerName : "RootContainer" 
   },   
-  nonRootContainers: {
-    "id001" : {
-        id : "adscewecewtwet",
-        x : 0,
-        y: 0,
-        w: 5,
-        h: 5,
-        containerName: "RootContainer"   
-    }
-  }
+  nonRootContainers: {}
    
 };
 

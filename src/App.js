@@ -6,7 +6,7 @@ import dragImage from "./dragImage.png"
 import dragImageWarning from "./dragImageWarning.png"
 
 import Store from "./state/store"
-import {Context} from "./state/store"
+import { Context } from "./state/store"
 
 import useStateRef from 'react-usestateref'
 
@@ -67,7 +67,7 @@ export function ToolBarElementForContiner({ children, id }) {
 }
 
 
-export function NonRootContainer({ w, h, x, y, id, containerName}) {
+export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
   const [state, dispatch] = useContext(Context);
 
@@ -93,7 +93,9 @@ export function NonRootContainer({ w, h, x, y, id, containerName}) {
 
   const [activateDrag, setActivateDrag] = useState(false)
 
-  const [dragDirection, setDragDirection] = useState([0,0])
+  const [isMovable, setIsMovable] = useState(true)
+
+  const [dragDirection, setDragDirection] = useState([0, 0])
 
   React.useEffect(() => {
     console.log(gridUnit)
@@ -101,9 +103,159 @@ export function NonRootContainer({ w, h, x, y, id, containerName}) {
     setContainer(document.querySelector(`.${containerName}`))
   }, []);
 
+  let moveSettings = <Moveable
+    target={target}
+    resizable={true}
+    draggable={true}
+    throttleDrag={false}
+    keepRatio={false}
+    originDraggable={false}
+    originRelative={true}
+    throttleResize={false}
+    renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
+    edge={true}
+    zoom={1}
+    origin={true}
+    padding={{ "left": 0, "top": 0, "right": 0, "bottom": 0 }}
+    onDragOriginStart={e => {
+      e.dragStart && e.dragStart.set(frame.translate);
+    }}
+    onDragOrigin={e => {
+      frame.translate = e.drag.beforeTranslate;
+      frame.transformOrigin = e.transformOrigin;
+    }}
+    onDragStart={e => {
+      e.set(frame.translate);
+    }}
+    onDrag={e => {
+      console.log(e.beforeTranslate, frame)
+      frame.translate = e.beforeTranslate;
+    }}
+
+
+    onDragEnd={
+
+
+      e => {
+
+
+        // try {
+        //   let container = document.querySelector(`.${containerName}`);
+        //   let containerY = container.getBoundingClientRect().y
+
+        //   let yPostion = e.target.getBoundingClientRect().top - containerY;
+        //   let xPosition = e.target.getBoundingClientRect().left;
+
+        //   let snappedYPos = Math.floor(yPostion / gridUnit) * gridUnit
+        //   let snappedXPos = Math.floor(xPosition / gridUnit) * gridUnit
+
+        //   if (snappedXPos < 0) {
+        //     snappedXPos = 0
+        //   }
+
+        //   if (snappedYPos < 0) {
+        //     snappedYPos = 0
+        //   }
+
+        //   console.log("X, Y",
+        //     snappedXPos / gridUnit,
+        //     snappedYPos / gridUnit)
+
+        //   dispatch(
+        //     {
+        //       type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
+        //       payload:
+        //       {
+        //         id: id,
+        //         x: snappedXPos / gridUnit,
+        //         y: snappedYPos / gridUnit
+        //       }
+        //     })
+
+
+        // } catch (error) {
+        //   console.log((`.${containerName}`))
+        //   console.log(error)
+        // }
+
+
+      }
+
+
+
+    }
+
+    onResizeStart={e => {
+      e.setOrigin(["%", "%"]);
+      e.dragStart && e.dragStart.set(frame.translate);
+      // e.dataTransfer.getData("application/x.itemType");
+      setDragDirection(e.direction)
+
+    }}
+    onResize={e => {
+      const beforeTranslate = e.drag.beforeTranslate;
+
+      frame.translate = beforeTranslate;
+      e.target.style.width = `${e.width}px`;
+      e.target.style.height = `${e.height}px`;
+      e.target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
+    }}
+
+    onResizeEnd={
+      e => {
+        //console.log(dragDirection)
+
+        try {
+          // let calculatedWith = Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit
+          // let calculatedHeight = Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit
+
+          //console.log("Calcualted With", (Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit) ,  w * gridUnit)
+          // console.log("Calcualted Height",  (Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit) ,  h * gridUnit)
+
+          // e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
+          // e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
+
+          if (dragDirection[0] === 1 && dragDirection[1] === 0) // Resized Vertically
+          {
+            e.target.style.width = `${Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
+            //e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
+          } else if (dragDirection[0] === 0 && dragDirection[1] === 1) //Resized Horizontally
+          {
+            //e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
+            e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
+          }
+          else //Resized In Both axis
+          {
+            e.target.style.width = `${Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
+            e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
+          }
+
+
+
+          //console.log(e, "On Resize End")
+
+        } catch (error) {
+          console.log(error)
+        }
+
+
+      }
+
+    }
+
+    onRender={e => {
+      const { translate, rotate, transformOrigin } = frame;
+      console.log(Math.ceil(translate[0] / gridUnit) * gridUnit, Math.ceil(translate[1] / gridUnit) * gridUnit)
+      e.target.style.transformOrigin = transformOrigin;
+      e.target.style.transform = `translate(${Math.ceil(translate[0] / gridUnit) * gridUnit}px, ${Math.ceil(translate[1] / gridUnit) * gridUnit}px)`
+        + ` rotate(${rotate}deg)`;
+    }}
+  />
+
   return (
     <>
       <div
+        onDoubleClick = { e => setIsMovable(!isMovable)}
         style={{
           padding: "1em",
           backgroundColor: "honeydew",
@@ -119,141 +271,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName}) {
       >
 
       </div>
-      <Moveable
-        target={target}
-        resizable={true}
-        draggable={true}
-        throttleDrag={false}
-        keepRatio={false}
-        originDraggable={false}
-        originRelative={true}
-        throttleResize={false}
-        renderDirections={["nw", "n", "ne", "w", "e", "sw", "s", "se"]}
-        edge={true}
-        zoom={1}
-        origin={true}
-        padding={{ "left": 0, "top": 0, "right": 0, "bottom": 0 }}
-        onDragOriginStart={e => {
-          e.dragStart && e.dragStart.set(frame.translate);
-        }}
-        onDragOrigin={e => {
-          frame.translate = e.drag.beforeTranslate;
-          frame.transformOrigin = e.transformOrigin;
-        }}
-        onDragStart={e => {
-          e.set(frame.translate);
-        }}
-        onDrag={e => {
-          frame.translate = e.beforeTranslate;
-          //console.log(e)
-        }}
-       
+      {isMovable ? moveSettings : <></>}
 
-        onDragEnd= {
-          
-          
-          e => {
-
-            
-            try {
-              let container = document.querySelector(`.${containerName}`);
-              let containerY = container.getBoundingClientRect().y
-
-              let yPostion = e.target.getBoundingClientRect().top - containerY;
-              let xPosition = e.target.getBoundingClientRect().left;
-
-              let snappedYPos = Math.floor(yPostion / gridUnit) * gridUnit
-              let snappedXPos = Math.floor(xPosition / gridUnit) * gridUnit
-
-              if (snappedXPos < 0) {
-                snappedXPos = 0
-              }
-
-              if (snappedYPos < 0) {
-                snappedYPos = 0
-              }
-
-              console.log("X, Y",
-                snappedXPos / gridUnit,
-                snappedYPos / gridUnit)
-
-            } catch (error) {
-              console.log((`.${containerName}`))
-              console.log(error)
-            }
-
-
-          }
-        
-          
-
-        }
-
-        onResizeStart={e => {
-          e.setOrigin(["%", "%"]);
-          e.dragStart && e.dragStart.set(frame.translate);
-          // e.dataTransfer.getData("application/x.itemType");
-          setDragDirection(e.direction)
-
-        }}
-        onResize={e => {
-          const beforeTranslate = e.drag.beforeTranslate;
-
-          frame.translate = beforeTranslate;
-          e.target.style.width = `${e.width}px`;
-          e.target.style.height = `${e.height}px`;
-          e.target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
-        }}
-
-        onResizeEnd={
-          e => {
-            //console.log(dragDirection)
-
-            try {
-              // let calculatedWith = Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit
-              // let calculatedHeight = Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit
-
-              //console.log("Calcualted With", (Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit) ,  w * gridUnit)
-              // console.log("Calcualted Height",  (Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit) ,  h * gridUnit)
-
-              // e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
-              // e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
-
-              if(dragDirection[0] === 1 && dragDirection[1] === 0 ) // Resized Vertically
-              {
-                  e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
-                  //e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
-              }else if(dragDirection[0] === 0 && dragDirection[1] === 1 ) //Resized Horizontally
-              {
-                //e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
-                e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
-              }
-              else //Resized In Both axis
-              {
-                e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
-                e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
-              }
-
-              
-
-              //console.log(e, "On Resize End")
-
-            } catch (error) {
-              console.log(error)
-            }
-
-
-          }
-
-        }
-
-        onRender={e => {
-          const { translate, rotate, transformOrigin } = frame;
-          e.target.style.transformOrigin = transformOrigin;
-          e.target.style.transform = `translate(${translate[0]}px, ${translate[1]}px)`
-            + ` rotate(${rotate}deg)`;
-        }}
-      />
     </>
   )
 }
@@ -290,13 +309,13 @@ export function RootContainer({ children, ContainerName }) {
 
   React.useEffect(() => {
     console.log(gridItems)
-    
+
   }, [update])
 
   React.useEffect(() => {
     console.log(state, "State")
 
-  },[])
+  }, [])
 
   const handleDragEnter = e => {
     e.preventDefault();
@@ -325,25 +344,27 @@ export function RootContainer({ children, ContainerName }) {
     let XCoordinate = Math.floor(XPosition / (gridUnit));
     let YCoordinate = Math.floor(YPosition - container.offsetTop / (gridUnit))
 
-    if(XPosition < gridUnit){ XCoordinate = 0}
+    if (XPosition < gridUnit) { XCoordinate = 0 }
 
-    if(YPosition < gridUnit){ YCoordinate = 0}
-    
+    if (YPosition < gridUnit) { YCoordinate = 0 }
+
 
     let id = makeid(10)
 
     let itemType = e.dataTransfer.getData("application/x.itemType");
 
     let generatedKey = Math.random() * (9999 - 1) + 1
-  
-    dispatch({type : "ADD_NON_ROOT_CONTAINER" , payload : {
-      id : id,
-      x : Math.floor(XPosition / (gridUnit)),
-      y: Math.floor(YPosition / (gridUnit)),
-      w: 5,
-      h: 5,
-      containerName: "RootContainer"  
-    }})
+
+    dispatch({
+      type: "ADD_NON_ROOT_CONTAINER", payload: {
+        id: id,
+        x: Math.floor(XPosition / (gridUnit)),
+        y: Math.floor(YPosition / (gridUnit)),
+        w: 5,
+        h: 5,
+        containerName: "RootContainer"
+      }
+    })
 
     // setGridItems([...gridItems,
     // {
@@ -362,7 +383,7 @@ export function RootContainer({ children, ContainerName }) {
     // ])
 
 
-    
+
 
     // setUpdate(!update)
 
@@ -372,23 +393,23 @@ export function RootContainer({ children, ContainerName }) {
   };
 
   let renderArray = [];
-  
+
   Object.keys(state.nonRootContainers).forEach(
     (keyy) => {
-        //console.log(state.nonRootContainers[keyy])
-        let {id, x, y , w, h , containerName} = state.nonRootContainers[keyy];
-        let item =   <NonRootContainer
-        key = {id}                            //   id = {id}
-        id = {id}
-        x = {x}
-        y = {y}
-        w = {w}
-        h = {h}
-        ContainerClassName = {id}
-        containerName = {containerName}
+      //console.log(state.nonRootContainers[keyy])
+      let { id, x, y, w, h, containerName } = state.nonRootContainers[keyy];
+      let item = <NonRootContainer
+        key={id}                            //   id = {id}
+        id={id}
+        x={x}
+        y={y}
+        w={w}
+        h={h}
+        ContainerClassName={id}
+        containerName={containerName}
       />
-        renderArray.push(item)
-        
+      renderArray.push(item)
+
     }
   )
 
@@ -404,7 +425,7 @@ export function RootContainer({ children, ContainerName }) {
         onDragLeave={e => handleDragLeave(e)}
       >
         {
-            renderArray
+          renderArray
         }
       </div>
     </>
