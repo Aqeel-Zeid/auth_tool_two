@@ -154,31 +154,35 @@ export function NonRootContainer({ w, h, x, y, id, containerName}) {
           
           e => {
 
-            let container = document.querySelector(`.${containerName}`);
-            let containerY = container.getBoundingClientRect().y
-
-            let yPostion = e.target.getBoundingClientRect().top - containerY;
-            let xPosition =  e.target.getBoundingClientRect().left;
-
-            let snappedYPos = Math.floor(yPostion / gridUnit) * gridUnit
-            let snappedXPos = Math.floor(xPosition/ gridUnit) * gridUnit
-
-           if(snappedXPos < 0)
-           {
-             snappedXPos = 0
-           }
-             
-           if(snappedYPos < 0)
-           {
-             snappedYPos = 0
-           }
-
-            console.log("X, Y" ,
-             snappedXPos / gridUnit,
-             snappedYPos / gridUnit)
-
-          
             
+            try {
+              let container = document.querySelector(`.${containerName}`);
+              let containerY = container.getBoundingClientRect().y
+
+              let yPostion = e.target.getBoundingClientRect().top - containerY;
+              let xPosition = e.target.getBoundingClientRect().left;
+
+              let snappedYPos = Math.floor(yPostion / gridUnit) * gridUnit
+              let snappedXPos = Math.floor(xPosition / gridUnit) * gridUnit
+
+              if (snappedXPos < 0) {
+                snappedXPos = 0
+              }
+
+              if (snappedYPos < 0) {
+                snappedYPos = 0
+              }
+
+              console.log("X, Y",
+                snappedXPos / gridUnit,
+                snappedYPos / gridUnit)
+
+            } catch (error) {
+              console.log((`.${containerName}`))
+              console.log(error)
+            }
+
+
           }
         
           
@@ -265,6 +269,9 @@ export function RootContainer({ children, ContainerName }) {
 
   const [update, setUpdate] = React.useState(false)
 
+  React.useEffect(() => {
+    console.log(state.nonRootContainers)
+  }, [JSON.stringify(state.nonRootContainers)])
 
   function makeid(length) {
     var result = [];
@@ -329,27 +336,35 @@ export function RootContainer({ children, ContainerName }) {
 
     let generatedKey = Math.random() * (9999 - 1) + 1
   
-
-    setGridItems([...gridItems,
-    {
-      x: Math.floor(XPosition / (gridUnit)),
+    dispatch({type : "ADD_NON_ROOT_CONTAINER" , payload : {
+      id : id,
+      x : Math.floor(XPosition / (gridUnit)),
       y: Math.floor(YPosition / (gridUnit)),
       w: 5,
       h: 5,
-      gridUnit: gridUnit,
-      key: generatedKey,
-      id: id,
-      ContainerName: ContainerName,
-      ContainerClassName: "NewContainer",
-      gridItems: gridItems,
-      setGridItems: setGridItems,
-    }
-    ])
+      containerName: "RootContainer"  
+    }})
+
+    // setGridItems([...gridItems,
+    // {
+    //   x: Math.floor(XPosition / (gridUnit)),
+    //   y: Math.floor(YPosition / (gridUnit)),
+    //   w: 5,
+    //   h: 5,
+    //   gridUnit: gridUnit,
+    //   key: generatedKey,
+    //   id: id,
+    //   ContainerName: ContainerName,
+    //   ContainerClassName: "NewContainer",
+    //   gridItems: gridItems,
+    //   setGridItems: setGridItems,
+    // }
+    // ])
 
 
     
 
-    setUpdate(!update)
+    // setUpdate(!update)
 
     //console.log("Grid Items", gridItems)
     //setState(JSON.stringify(gridItems))
@@ -370,7 +385,7 @@ export function RootContainer({ children, ContainerName }) {
         w = {w}
         h = {h}
         ContainerClassName = {id}
-        ContainerName = {containerName}
+        containerName = {containerName}
       />
         renderArray.push(item)
         

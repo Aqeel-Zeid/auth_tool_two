@@ -1,5 +1,5 @@
 
-const Reducer = (state, action) => {
+export default function Reducer (state, action){
     //console.log(state,action)
     //console.log(action);
   
@@ -7,6 +7,9 @@ const Reducer = (state, action) => {
       case "TEST_ACTION" : 
         console.log("TEST ACTION", action.payload, state)
         return state
+      case "ADD_NON_ROOT_CONTAINER" : 
+        console.log(action)
+        return {...state, nonRootContainers : {...state.nonRootContainers , [action.payload.id] : action.payload } }
       default:
         return state;
     }
