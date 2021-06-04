@@ -84,8 +84,20 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
   const [container, setContainer] = React.useState();
 
 
+  // React.useEffect(() => {
+  //   //setFrame({...frame, translate : [0,0]})
+  //   console.log("Position Changed")
+  // }, [ state.nonRootContainers[id].lastY , state.nonRootContainers[id].lastX  ] )
+
+
 
   const [frame, setFrame] = React.useState({
+    translate: [0, 0],
+    rotate: 0,
+    transformOrigin: "50% 50%",
+  });
+
+  const [recentFrame, setRecentFrame] = React.useState({
     translate: [0, 0],
     rotate: 0,
     transformOrigin: "50% 50%",
@@ -137,6 +149,26 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
 
       e => {
+
+            let container = document.querySelector(`.${containerName}`);
+            let containerY = container.getBoundingClientRect().y
+
+          let childContainerBounds = document.querySelector(`#${id}`).getBoundingClientRect()
+
+          console.log(childContainerBounds)
+
+          console.log(childContainerBounds.y - containerY, childContainerBounds.x )
+            dispatch(
+            {
+              type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
+              payload:
+              {
+                id: id,
+                x: childContainerBounds.x ,
+                y: childContainerBounds.y - containerY 
+              }
+            })
+
 
 
         // try {
@@ -245,10 +277,19 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
     onRender={e => {
       const { translate, rotate, transformOrigin } = frame;
-      console.log(Math.ceil(translate[0] / gridUnit) * gridUnit, Math.ceil(translate[1] / gridUnit) * gridUnit)
+      //console.log(Math.ceil(translate[0] / gridUnit) * gridUnit, Math.ceil(translate[1] / gridUnit) * gridUnit)
+
+      let container = document.querySelector(`.${containerName}`);
+      let containerY = container.getBoundingClientRect().y
+
+      let childContainer = document.querySelector(`#${id}`)
+      let childContainerBounds = childContainer.getBoundingClientRect();
+
+
       e.target.style.transformOrigin = transformOrigin;
       e.target.style.transform = `translate(${Math.ceil(translate[0] / gridUnit) * gridUnit}px, ${Math.ceil(translate[1] / gridUnit) * gridUnit}px)`
         + ` rotate(${rotate}deg)`;
+
     }}
   />
 
@@ -262,8 +303,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
           width: `${gridUnit * w}px`,
           height: `${gridUnit * h}px`,
           position: "absolute",
-          top: `${y * gridUnit}px`,
-          left: `${x * gridUnit}px`
+          top: `${Math.floor(y/gridUnit) * gridUnit}px`,
+          left: `${Math.floor(x/gridUnit) * gridUnit}px`,
         }}
         className={id}
         id={id}
@@ -342,12 +383,14 @@ export function RootContainer({ children, ContainerName }) {
     console.log("Dropped into Position , ", Math.ceil(XPosition / (gridUnit)), Math.ceil(YPosition / (gridUnit)))
 
     let XCoordinate = Math.floor(XPosition / (gridUnit));
-    let YCoordinate = Math.floor(YPosition - container.offsetTop / (gridUnit))
+    let YCoordinate = Math.floor((YPosition - container.offsetTop )/ (gridUnit))
 
     if (XPosition < gridUnit) { XCoordinate = 0 }
 
     if (YPosition < gridUnit) { YCoordinate = 0 }
 
+
+    console.log(XCoordinate,YCoordinate)  
 
     let id = makeid(10)
 
@@ -358,8 +401,8 @@ export function RootContainer({ children, ContainerName }) {
     dispatch({
       type: "ADD_NON_ROOT_CONTAINER", payload: {
         id: id,
-        x: Math.floor(XPosition / (gridUnit)),
-        y: Math.floor(YPosition / (gridUnit)),
+        x: XPosition,
+        y: YPosition,
         w: 5,
         h: 5,
         containerName: "RootContainer"
