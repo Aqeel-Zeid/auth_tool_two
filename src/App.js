@@ -71,6 +71,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
   const [state, dispatch] = useContext(Context);
 
+
+
   let gridUnit = Number(state.rootContainer.gridUnit);
 
   // - When A Child is inside of a Non-root parent Container
@@ -84,10 +86,10 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
   const [container, setContainer] = React.useState();
 
 
-  // React.useEffect(() => {
-  //   //setFrame({...frame, translate : [0,0]})
-  //   console.log("Position Changed")
-  // }, [ state.nonRootContainers[id].lastY , state.nonRootContainers[id].lastX  ] )
+  React.useEffect(() => {
+    //setFrame({...frame, translate : [0,0]})
+    console.log("Changed Actice Container")
+  }, [ state.activeContainer ])
 
 
 
@@ -138,15 +140,16 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
     }}
     onDragStart={e => {
       e.set(frame.translate);
+      
     }}
     onDrag={e => {
       console.log(e.beforeTranslate, frame)
       frame.translate = e.beforeTranslate;
+
     }}
 
 
     onDragEnd={
-
 
       e => {
 
@@ -157,59 +160,21 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
           console.log(childContainerBounds)
 
-          console.log(childContainerBounds.y - containerY, childContainerBounds.x )
-            dispatch(
-            {
-              type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
-              payload:
-              {
-                id: id,
-                x: childContainerBounds.x ,
-                y: childContainerBounds.y - containerY 
-              }
-            })
+          //-----------------------------FIX ME WITH NESTED ELEMENTS-----------------------------------------------------------------------------------------------------------------------
 
+          // console.log(childContainerBounds.y - containerY, childContainerBounds.x )
+          //   dispatch(
+          //   {
+          //     type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
+          //     payload:
+          //     {
+          //       id: id,
+          //       x: childContainerBounds.x ,
+          //       y: childContainerBounds.y - containerY 
+          //     }
+          //   })
 
-
-        // try {
-        //   let container = document.querySelector(`.${containerName}`);
-        //   let containerY = container.getBoundingClientRect().y
-
-        //   let yPostion = e.target.getBoundingClientRect().top - containerY;
-        //   let xPosition = e.target.getBoundingClientRect().left;
-
-        //   let snappedYPos = Math.floor(yPostion / gridUnit) * gridUnit
-        //   let snappedXPos = Math.floor(xPosition / gridUnit) * gridUnit
-
-        //   if (snappedXPos < 0) {
-        //     snappedXPos = 0
-        //   }
-
-        //   if (snappedYPos < 0) {
-        //     snappedYPos = 0
-        //   }
-
-        //   console.log("X, Y",
-        //     snappedXPos / gridUnit,
-        //     snappedYPos / gridUnit)
-
-        //   dispatch(
-        //     {
-        //       type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
-        //       payload:
-        //       {
-        //         id: id,
-        //         x: snappedXPos / gridUnit,
-        //         y: snappedYPos / gridUnit
-        //       }
-        //     })
-
-
-        // } catch (error) {
-        //   console.log((`.${containerName}`))
-        //   console.log(error)
-        // }
-
+          //-----------------------------FIX ME WITH NESTED ELEMENTS-----------------------------------------------------------------------------------------------------------------------
 
       }
 
@@ -293,10 +258,44 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
     }}
   />
 
+  let renderArray = [];
+
+  //console.log(state.nonRootContainers[id].children)
+
+  try {
+    Object.keys(state.nonRootContainers[id].children).forEach(
+      (keyy) => {
+    
+        let { x, y, w, h, containerName } = state.nonRootContainers[id].children[keyy];
+        let item = <NonRootContainer
+          key={keyy}                            //   id = {id}
+          id={keyy}
+          x={x}
+          y={y}
+          w={w}
+          h={h}
+          ContainerClassName={id}
+          containerName={containerName}
+        />
+        renderArray.push(item)
+        
+      }
+    )
+  
+    console.log(renderArray)
+  } catch (error) {
+    console.log(error)
+  }
+
+
+
   return (
     <>
       <div
-        onDoubleClick = { e => setIsMovable(!isMovable)}
+        onDoubleClick = { e => {
+          console.log(e.target.id, "Double Click")
+          dispatch({type : "SET_ACTIVE_CONTAINER", payload : e.target.id})
+        }}
         style={{
           padding: "1em",
           backgroundColor: "honeydew",
@@ -305,14 +304,18 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
           position: "absolute",
           top: `${Math.floor(y/gridUnit) * gridUnit}px`,
           left: `${Math.floor(x/gridUnit) * gridUnit}px`,
+          borderStyle : "dashed",
+          borderColor : "grey"
         }}
         className={id}
         id={id}
         onClick={() => { setActivateDrag(!activateDrag) }}
       >
-
+        {
+            renderArray
+        }
       </div>
-      {isMovable ? moveSettings : <></>}
+      {(state.activeContainer === id) ? moveSettings : <></>}
 
     </>
   )
@@ -402,11 +405,29 @@ export function RootContainer({ children, ContainerName }) {
       type: "ADD_NON_ROOT_CONTAINER", payload: {
         id: id,
         x: XPosition,
+        lastX : XPosition,
         y: YPosition,
-        w: 5,
-        h: 5,
-        containerName: "RootContainer"
+        lastY : YPosition,
+        w: 10,
+        h: 10,
+        containerName: "RootContainer", 
+        children:
+        {
+          "aosdnu": {
+            id: "aosdnu",
+            x: 0,
+            y: 0,
+            w: 5,
+            h: 5,
+            containerName: "RootContainer"
+          }
+        }
       }
+    })
+
+    dispatch({
+      type : "SET_ACTIVE_CONTAINER",
+      payload : id
     })
 
     // setGridItems([...gridItems,

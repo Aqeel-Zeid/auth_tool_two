@@ -25,7 +25,7 @@ export default function Reducer(state, action) {
                 }
             }
         case "UPDATE_NON_ROOT_CONTAINER_STATE":
-                console.log(action)
+                //console.log(action)
                 return {
                     ...state, nonRootContainers: {
                         ...state.nonRootContainers,
@@ -38,6 +38,11 @@ export default function Reducer(state, action) {
                             h : action.payload.h
                         }
                     }
+                }
+        case "SET_ACTIVE_CONTAINER":
+                return {
+                    ...state,
+                    activeContainer : action.payload
                 }
         default:
             return state;

@@ -6,7 +6,8 @@ const initialState = {
     gridUnit: 8 ,
     containerName : "RootContainer" 
   },   
-  nonRootContainers: {}
+  nonRootContainers: {},
+  activeContainer : ""
    
 };
 
