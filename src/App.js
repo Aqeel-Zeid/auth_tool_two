@@ -67,11 +67,11 @@ export function ToolBarElementForContiner({ children, id }) {
 }
 
 
-export function NonRootContainer({ w, h, x, y, id, containerName }) {
+export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
 
   const [state, dispatch] = useContext(Context);
 
-
+  
 
   let gridUnit = Number(state.rootContainer.gridUnit);
 
@@ -88,7 +88,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
   React.useEffect(() => {
     //setFrame({...frame, translate : [0,0]})
-    console.log("Changed Actice Container")
+    //console.log("Changed Actice Container")
   }, [ state.activeContainer ])
 
 
@@ -112,15 +112,46 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
   const [dragDirection, setDragDirection] = useState([0, 0])
 
   React.useEffect(() => {
-    console.log(gridUnit)
+    //console.log(gridUnit)
     setTarget(document.querySelector(`#${id}`));
     setContainer(document.querySelector(`.${containerName}`))
+
+    //Figure Out the level 
+    console.log(parent) 
+
   }, []);
+
+  
+  let calculateBounds = (parent) => {
+  
+    try {
+      let myImmediateParent = parent[parent.length - 2]
+
+    console.log(id,myImmediateParent, document.querySelector(`.${myImmediateParent}`).getBoundingClientRect())
+    
+    let parentBounds = document.querySelector(`.${myImmediateParent}`).getBoundingClientRect()
+
+    let bounds= { "left": Math.ceil(parentBounds.left) ,"top": Math.ceil(parentBounds.top) ,"width": Math.ceil(parentBounds.width),"height": Math.ceil(parentBounds.height) }
+  
+    console.log(bounds)
+
+    return bounds
+  
+    } catch (error) {
+      return null
+    }
+
+    
+  }
+
+  //calculateBounds(parent)
 
   let moveSettings = <Moveable
     target={target}
     resizable={true}
     draggable={true}
+    snappable = {true}
+    //bounds={calculateBounds(parent)}
     throttleDrag={false}
     keepRatio={false}
     originDraggable={false}
@@ -143,7 +174,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
       
     }}
     onDrag={e => {
-      console.log(e.beforeTranslate, frame)
+      //console.log(e.beforeTranslate, frame)
       frame.translate = e.beforeTranslate;
 
     }}
@@ -158,23 +189,26 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
 
           let childContainerBounds = document.querySelector(`#${id}`).getBoundingClientRect()
 
-          console.log(childContainerBounds)
+          
+          // parent.map(
+          //   parent => console.log("My Parent" , parent)
+          // )
 
-          //-----------------------------FIX ME WITH NESTED ELEMENTS-----------------------------------------------------------------------------------------------------------------------
 
-          // console.log(childContainerBounds.y - containerY, childContainerBounds.x )
-          //   dispatch(
-          //   {
-          //     type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
-          //     payload:
-          //     {
-          //       id: id,
-          //       x: childContainerBounds.x ,
-          //       y: childContainerBounds.y - containerY 
-          //     }
-          //   })
 
-          //-----------------------------FIX ME WITH NESTED ELEMENTS-----------------------------------------------------------------------------------------------------------------------
+          
+            dispatch(
+            {
+              type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
+              payload:
+              {
+                path: parent,
+                x: childContainerBounds.x ,
+                y: childContainerBounds.y - containerY 
+              }
+            })
+
+         
 
       }
 
@@ -203,8 +237,9 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
         //console.log(dragDirection)
 
         try {
-          // let calculatedWith = Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit
-          // let calculatedHeight = Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit
+
+          let calculatedWith = Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit
+          let calculatedHeight = Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit
 
           //console.log("Calcualted With", (Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit) ,  w * gridUnit)
           // console.log("Calcualted Height",  (Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit) ,  h * gridUnit)
@@ -212,6 +247,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
           // e.target.style.width = `${ Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
           // e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
 
+          console.log(calculatedHeight/gridUnit,calculatedWith/gridUnit)
+          
           if (dragDirection[0] === 1 && dragDirection[1] === 0) // Resized Vertically
           {
             e.target.style.width = `${Math.ceil(e.lastEvent.width / (gridUnit)) * gridUnit}px`;
@@ -227,12 +264,21 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
             e.target.style.height = `${Math.ceil(e.lastEvent.height / (gridUnit)) * gridUnit}px`;
           }
 
-
+          dispatch(
+            {
+              type: "ADJUST_NON_ROOT_CONTAINER_DIMENTION",
+              payload:
+              {
+                path: parent,
+                h: calculatedHeight/gridUnit ,
+                w: calculatedWith/gridUnit 
+              }
+            })
 
           //console.log(e, "On Resize End")
 
         } catch (error) {
-          console.log(error)
+          //console.log(error)
         }
 
 
@@ -266,7 +312,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
     Object.keys(state.nonRootContainers[id].children).forEach(
       (keyy) => {
     
-        let { x, y, w, h, containerName } = state.nonRootContainers[id].children[keyy];
+        let { x, y, w, h, containerName, parent } = state.nonRootContainers[id].children[keyy];
         let item = <NonRootContainer
           key={keyy}                            //   id = {id}
           id={keyy}
@@ -276,15 +322,16 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
           h={h}
           ContainerClassName={id}
           containerName={containerName}
+          parent = {parent}
         />
         renderArray.push(item)
         
       }
     )
   
-    console.log(renderArray)
+    //console.log(renderArray)
   } catch (error) {
-    console.log(error)
+   //console.log(error)
   }
 
 
@@ -293,7 +340,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
     <>
       <div
         onDoubleClick = { e => {
-          console.log(e.target.id, "Double Click")
+          //console.log(e.target.id, "Double Click")
           dispatch({type : "SET_ACTIVE_CONTAINER", payload : e.target.id})
         }}
         style={{
@@ -304,8 +351,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName }) {
           position: "absolute",
           top: `${Math.floor(y/gridUnit) * gridUnit}px`,
           left: `${Math.floor(x/gridUnit) * gridUnit}px`,
-          borderStyle : "dashed",
-          borderColor : "grey"
+          // borderStyle : "dashed",
+          // borderColor : "grey"
         }}
         className={id}
         id={id}
@@ -333,7 +380,7 @@ export function RootContainer({ children, ContainerName }) {
   const [update, setUpdate] = React.useState(false)
 
   React.useEffect(() => {
-    console.log(state.nonRootContainers)
+    //console.log(state.nonRootContainers)
   }, [JSON.stringify(state.nonRootContainers)])
 
   function makeid(length) {
@@ -352,12 +399,12 @@ export function RootContainer({ children, ContainerName }) {
   const [gridItems, setGridItems] = React.useState([])
 
   React.useEffect(() => {
-    console.log(gridItems)
+    //console.log(gridItems)
 
   }, [update])
 
   React.useEffect(() => {
-    console.log(state, "State")
+    //console.log(state, "State")
 
   }, [])
 
@@ -393,7 +440,7 @@ export function RootContainer({ children, ContainerName }) {
     if (YPosition < gridUnit) { YCoordinate = 0 }
 
 
-    console.log(XCoordinate,YCoordinate)  
+    //console.log(XCoordinate,YCoordinate)  
 
     let id = makeid(10)
 
@@ -409,17 +456,25 @@ export function RootContainer({ children, ContainerName }) {
         y: YPosition,
         lastY : YPosition,
         w: 10,
+        lastW : 10,
         h: 10,
+        lastH : 10,
         containerName: "RootContainer", 
+        parent : ["RootContainer", id], 
         children:
         {
           "aosdnu": {
             id: "aosdnu",
             x: 0,
+            lastX : 0,
             y: 0,
+            lastY : 0,
             w: 5,
+            lastW : 5,
             h: 5,
-            containerName: "RootContainer"
+            lastH : 5,
+            containerName: "RootContainer",
+            parent : ["RootContainer",id,"aosdnu"]
           }
         }
       }
@@ -461,7 +516,7 @@ export function RootContainer({ children, ContainerName }) {
   Object.keys(state.nonRootContainers).forEach(
     (keyy) => {
       //console.log(state.nonRootContainers[keyy])
-      let { id, x, y, w, h, containerName } = state.nonRootContainers[keyy];
+      let { id, x, y, w, h, containerName, parent } = state.nonRootContainers[keyy];
       let item = <NonRootContainer
         key={id}                            //   id = {id}
         id={id}
@@ -471,6 +526,7 @@ export function RootContainer({ children, ContainerName }) {
         h={h}
         ContainerClassName={id}
         containerName={containerName}
+        parent = {parent}
       />
       renderArray.push(item)
 
