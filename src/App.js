@@ -117,7 +117,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent, childr
     setContainer(document.querySelector(`.${containerName}`))
 
     //Figure Out the level 
-    console.log(parent) 
+    //console.log(parent) 
 
   }, []);
 
@@ -185,16 +185,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent, childr
             let container = document.querySelector(`.${containerName}`);
             let containerY = container.getBoundingClientRect().y
 
-          let childContainerBounds = document.querySelector(`#${id}`).getBoundingClientRect()
+            let childContainerBounds = document.querySelector(`#${id}`).getBoundingClientRect()
 
-          
-          // parent.map(
-          //   parent => console.log("My Parent" , parent)
-          // )
-
-
-
-          
             dispatch(
             {
               type: "ADJUST_NON_ROOT_CONTAINER_LOCATION",
@@ -341,8 +333,10 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent, childr
     e.preventDefault();
     let container = document.querySelector(`.${id}`);
 
-    let XPosition = e.pageX;
-    let YPosition = e.pageY - container.offsetTop;
+    let rootContainerOffset = document.querySelector(`.${state.rootContainer.containerName}`)
+
+    let XPosition = e.pageX - container.offsetLeft - rootContainerOffset.offsetLeft;
+    let YPosition = e.pageY - container.offsetTop - rootContainerOffset.offsetTop;
     //console.log(container.offsetTop)
     //console.log("Dropped into Position , " , Math.round((e.pageX - container.offsetTop ) / (gridUnit)) , Math.round(e.pageY / (gridUnit)))
     console.log("Dropped into Position , ", Math.ceil(XPosition / (gridUnit)), Math.ceil(YPosition / (gridUnit)) )
@@ -400,11 +394,11 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent, childr
     let compoundReference = findCompoundReference(parent, state.nonRootContainers)
 
     
-    console.log(id, parent, compoundReference.children)
+    //console.log(id, parent, compoundReference.children)
 
     Object.keys(compoundReference.children).forEach(
       (keyy) => {
-        console.log(compoundReference.children[keyy], keyy)
+        //console.log(compoundReference.children[keyy], keyy)
         let { id, x, y, w, h, containerName, parent, children } = compoundReference.children[keyy];
         let item = <NonRootContainer
           key={id}                            //   id = {id}
