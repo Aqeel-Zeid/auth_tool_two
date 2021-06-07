@@ -67,7 +67,7 @@ export function ToolBarElementForContiner({ children, id }) {
 }
 
 
-export function NonRootContainer({ w, h, x, y, id, containerName, parent , children }) {
+export function NonRootContainer({ w, h, x, y, id, containerName, parent, children }) {
 
   const [state, dispatch] = useContext(Context);
 
@@ -318,6 +318,25 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent , child
   }
 
 
+  const findCompoundReference = (path, object) => {
+    
+    let compoundReference = object;
+
+    let pathWithoutRoot = path.slice(1)
+
+    for (let i = 0; i < pathWithoutRoot.length; i++) {
+      if (i === 0) {
+        compoundReference = compoundReference[`${pathWithoutRoot[i]}`]
+      }
+      else {
+        compoundReference = compoundReference.children[`${pathWithoutRoot[i]}`]
+      }
+    }
+
+    return compoundReference
+
+  }
+
   const handleDrop = e => {
     e.preventDefault();
     let container = document.querySelector(`.${id}`);
@@ -365,49 +384,31 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent , child
       }
     })
 
-    // dispatch({
-    //   type : "SET_ACTIVE_CONTAINER",
-    //   payload : id
-    // })
+    dispatch({
+      type : "SET_ACTIVE_CONTAINER",
+      payload : id
+    })
 
 
     e.stopPropagation();
   };
 
-
-  function findCompoundReference(path, object) {
-    //console.log(path,object)
-
-    let compoundReference = object;
-
-    //console.log(compoundReference)
-
-    for (let i = 0; i < path.length; i++) {
-
-      if (i === 0) {
-        compoundReference = compoundReference[`${path[i]}`]
-      }
-      else {
-        compoundReference = compoundReference.children[`${path[i]}`]
-      }
-    }
-
-    return compoundReference
-
-  }
-
+  
 
   try {
 
-    console.log(id, parent)
+    let compoundReference = findCompoundReference(parent, state.nonRootContainers)
 
-    Object.keys(state.nonRootContainers[id].children).forEach(
-      (keyy) => {
     
-        let { x, y, w, h, containerName, parent } = state.nonRootContainers[id].children[keyy];
+    console.log(id, parent, compoundReference.children)
+
+    Object.keys(compoundReference.children).forEach(
+      (keyy) => {
+        console.log(compoundReference.children[keyy], keyy)
+        let { id, x, y, w, h, containerName, parent, children } = compoundReference.children[keyy];
         let item = <NonRootContainer
-          key={keyy}                            //   id = {id}
-          id={keyy}
+          key={id}                            //   id = {id}
+          id={id}
           x={x}
           y={y}
           w={w}
@@ -415,15 +416,16 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent , child
           ContainerClassName={id}
           containerName={containerName}
           parent = {parent}
+          children = {{}}
         />
         renderArray.push(item)
-        
+
       }
     )
   
     //console.log(renderArray)
   } catch (error) {
-   //console.log(error)
+   console.log(error)
   }
 
   function getRandomColor() {
@@ -435,7 +437,7 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent , child
     return color;
   }
 
-
+  
 
   return (
     <>
@@ -578,6 +580,7 @@ export function RootContainer({ children, ContainerName }) {
 
   let renderArray = [];
 
+
   Object.keys(state.nonRootContainers).forEach(
     (keyy) => {
       //console.log(state.nonRootContainers[keyy])
@@ -592,6 +595,7 @@ export function RootContainer({ children, ContainerName }) {
         ContainerClassName={id}
         containerName={containerName}
         parent = {parent}
+        children = {{}}
       />
       renderArray.push(item)
 
