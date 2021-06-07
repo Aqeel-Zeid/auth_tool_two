@@ -34,7 +34,7 @@ export function ToolBarElement({ children, id }) {
         var img = new Image();
         img.src = dragImage;
         e.dataTransfer.setDragImage(img, 0, 0);
-        e.dataTransfer.setData("application/x.itemType", "NON_CONTAINER");
+        e.dataTransfer.setData("application/x.origin", "TOP_TOOLBAR");
       }}
       id={id}
     >
@@ -67,7 +67,7 @@ export function ToolBarElementForContiner({ children, id }) {
 }
 
 
-export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
+export function NonRootContainer({ w, h, x, y, id, containerName, parent , children }) {
 
   const [state, dispatch] = useContext(Context);
 
@@ -178,8 +178,6 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
       frame.translate = e.beforeTranslate;
 
     }}
-
-
     onDragEnd={
 
       e => {
@@ -308,7 +306,101 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
 
   //console.log(state.nonRootContainers[id].children)
 
+  function makeid(length) {
+    var result = [];
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result.push(characters.charAt(Math.floor(Math.random() *
+        charactersLength)));
+    }
+    return result.join('');
+  }
+
+
+  const handleDrop = e => {
+    e.preventDefault();
+    let container = document.querySelector(`.${id}`);
+
+    let XPosition = e.pageX;
+    let YPosition = e.pageY - container.offsetTop;
+    //console.log(container.offsetTop)
+    //console.log("Dropped into Position , " , Math.round((e.pageX - container.offsetTop ) / (gridUnit)) , Math.round(e.pageY / (gridUnit)))
+    console.log("Dropped into Position , ", Math.ceil(XPosition / (gridUnit)), Math.ceil(YPosition / (gridUnit)) )
+    console.log("Dropped inside , ", id )
+    
+
+    let XCoordinate = Math.floor(XPosition / (gridUnit));
+    let YCoordinate = Math.floor((YPosition - container.offsetTop )/ (gridUnit))
+
+    if (XPosition < gridUnit) { XCoordinate = 0 }
+
+    if (YPosition < gridUnit) { YCoordinate = 0 }
+
+
+    //console.log(XCoordinate,YCoordinate)  
+
+    let myId = makeid(10)
+
+    let itemType = e.dataTransfer.getData("application/x.origin");
+
+    let generatedKey = Math.random() * (9999 - 1) + 1
+
+
+
+    dispatch({
+      type: "ADD_NON_ROOT_CONTAINER_INTO_NON_ROOT_CONTAINER", payload: {
+        id: myId,
+        x: XPosition,
+        lastX : XPosition,
+        y: YPosition,
+        lastY : YPosition,
+        w: 10,
+        lastW : 10,
+        h: 10,
+        lastH : 10,
+        containerName: "RootContainer", 
+        parent : [...parent,myId], 
+        children: {}
+      }
+    })
+
+    // dispatch({
+    //   type : "SET_ACTIVE_CONTAINER",
+    //   payload : id
+    // })
+
+
+    e.stopPropagation();
+  };
+
+
+  function findCompoundReference(path, object) {
+    //console.log(path,object)
+
+    let compoundReference = object;
+
+    //console.log(compoundReference)
+
+    for (let i = 0; i < path.length; i++) {
+
+      if (i === 0) {
+        compoundReference = compoundReference[`${path[i]}`]
+      }
+      else {
+        compoundReference = compoundReference.children[`${path[i]}`]
+      }
+    }
+
+    return compoundReference
+
+  }
+
+
   try {
+
+    console.log(id, parent)
+
     Object.keys(state.nonRootContainers[id].children).forEach(
       (keyy) => {
     
@@ -334,18 +426,27 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
    //console.log(error)
   }
 
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
 
 
   return (
     <>
       <div
-        onDoubleClick = { e => {
-          //console.log(e.target.id, "Double Click")
-          dispatch({type : "SET_ACTIVE_CONTAINER", payload : e.target.id})
-        }}
+        // onDoubleClick = { e => {
+        //   //console.log(e.target.id, "Double Click")
+        //   dispatch({type : "SET_ACTIVE_CONTAINER", payload : e.target.id})
+        // }}
         style={{
           padding: "1em",
-          backgroundColor: "honeydew",
+          backgroundColor: getRandomColor(),
           width: `${gridUnit * w}px`,
           height: `${gridUnit * h}px`,
           position: "absolute",
@@ -356,7 +457,8 @@ export function NonRootContainer({ w, h, x, y, id, containerName, parent }) {
         }}
         className={id}
         id={id}
-        onClick={() => { setActivateDrag(!activateDrag) }}
+        onClick={(e) => { dispatch({type : "SET_ACTIVE_CONTAINER", payload : e.target.id}) }}
+        onDrop={e => handleDrop(e)}
       >
         {
             renderArray
@@ -444,12 +546,12 @@ export function RootContainer({ children, ContainerName }) {
 
     let id = makeid(10)
 
-    let itemType = e.dataTransfer.getData("application/x.itemType");
+    let itemType = e.dataTransfer.getData("application/x.origin");
 
     let generatedKey = Math.random() * (9999 - 1) + 1
 
     dispatch({
-      type: "ADD_NON_ROOT_CONTAINER", payload: {
+      type: "ADD_NON_ROOT_CONTAINER_INTO_ROOT_CONTAINER", payload: {
         id: id,
         x: XPosition,
         lastX : XPosition,
@@ -461,22 +563,7 @@ export function RootContainer({ children, ContainerName }) {
         lastH : 10,
         containerName: "RootContainer", 
         parent : ["RootContainer", id], 
-        children:
-        {
-          "aosdnu": {
-            id: "aosdnu",
-            x: 0,
-            lastX : 0,
-            y: 0,
-            lastY : 0,
-            w: 5,
-            lastW : 5,
-            h: 5,
-            lastH : 5,
-            containerName: "RootContainer",
-            parent : ["RootContainer",id,"aosdnu"]
-          }
-        }
+        children: {}
       }
     })
 
@@ -485,29 +572,7 @@ export function RootContainer({ children, ContainerName }) {
       payload : id
     })
 
-    // setGridItems([...gridItems,
-    // {
-    //   x: Math.floor(XPosition / (gridUnit)),
-    //   y: Math.floor(YPosition / (gridUnit)),
-    //   w: 5,
-    //   h: 5,
-    //   gridUnit: gridUnit,
-    //   key: generatedKey,
-    //   id: id,
-    //   ContainerName: ContainerName,
-    //   ContainerClassName: "NewContainer",
-    //   gridItems: gridItems,
-    //   setGridItems: setGridItems,
-    // }
-    // ])
 
-
-
-
-    // setUpdate(!update)
-
-    //console.log("Grid Items", gridItems)
-    //setState(JSON.stringify(gridItems))
     e.stopPropagation();
   };
 
