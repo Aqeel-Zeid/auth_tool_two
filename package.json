@@ -6,13 +6,18 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "infinite-viewer": "^0.12.1",
     "react": "^17.0.2",
+    "react-archer": "^3.2.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.3",
+    "react-map-interaction": "^2.1.0",
     "react-moveable": "^0.27.7",
     "react-scripts": "4.0.3",
     "react-usestateref": "^1.0.5",
+    "react-xarrows": "^1.7.0",
+    "react-zoom-pan-pinch": "^2.1.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

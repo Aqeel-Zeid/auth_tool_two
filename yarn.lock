@@ -9495,6 +9495,11 @@
   "resolved" "https://registry.npmjs.org/react-usestateref/-/react-usestateref-1.0.5.tgz"
   "version" "1.0.5"
 
+"react-zoom-pan-pinch@^2.0.2":
+  "integrity" "sha512-7czrWgZUSN04ZgdLqmPi9e9w7+kPHjj/HOdY4dybvFsbFNULGcQOrvJa+z7+LbMWcVOMXOpV/+G39Rxdcjd5+g=="
+  "resolved" "https://registry.npmjs.org/react-zoom-pan-pinch/-/react-zoom-pan-pinch-2.0.2.tgz"
+  "version" "2.0.2"
+
 "react@*", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.5 || ^17.0.0", "react@^17.0.2", "react@>= 16", "react@>16.0.0", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
