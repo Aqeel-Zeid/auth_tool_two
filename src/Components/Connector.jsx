@@ -2,7 +2,7 @@ import React from 'react'
 import Xarrow from  'react-xarrows'
 
 
-export default function Connector({start, end}) {
+export default function Connector({start, end , label}) {
     return (
         <div>
             <Xarrow
@@ -11,8 +11,8 @@ export default function Connector({start, end}) {
                 animateDrawing={0.5}
                 key={`${start}-${end}`}
                 path="smooth"
-                showHead={false}
-                label={<h4>{start} -- {end}</h4>}
+                showHead={true}
+                label={<h4>{label}</h4>}
             />
         </div>
     )

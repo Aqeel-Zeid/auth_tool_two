@@ -127,6 +127,32 @@ export default function Reducer(state, action) {
           action.payload
         ]
       };
+    case "REGISTER_DEPENDENCY":
+      console.log(action.payload.source.split("-")[2])
+    let sourceId = action.payload.source.split("-")[2];
+    let targetID = action.payload.target.split("-")[2]
+    console.log(state.nonRootContainers[targetID].elementData.data.dependencies)
+    // return state;
+    return {
+          ...state,
+          nonRootContainers : {
+            ...state.nonRootContainers, 
+            [sourceId] : {
+              ...state.nonRootContainers[sourceId],
+              elementData :{
+                ...state.nonRootContainers[sourceId].elementData,
+                data : {
+                  ...state.nonRootContainers[sourceId].elementData.data,
+                  dependencies : [
+                ...state.nonRootContainers[sourceId].elementData.data.dependencies,
+                state.nonRootContainers[targetID].elementData.data.name
+              ]
+                }
+              }
+              
+            }
+          }
+        };
     default:
       return state;
   }

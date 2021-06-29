@@ -5,16 +5,37 @@ import NonRootContainer from './Components/NonRootContainer';
 
 import { NavigatorBar } from "./NavigatorBar";
 import { MapInteractionCSS } from 'react-map-interaction';
+import ComponentToolBar from "./Components/ComponentToolBar";
 
-
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-
-import { ArcherContainer, ArcherElement } from 'react-archer';
-
-import Xarrow from 'react-xarrows';
-
-import dotGrid from "./grid.svg"
 import Connector from "./Components/Connector";
+
+import SkillComponent from "./Components/RenderingComponents/SkillComponent";
+import SkillTreeComponent from "./Components/RenderingComponents/SkillTreeComponent";
+import FactComponent from "./Components/RenderingComponents/FactComponent";
+import ConceptComponent from "./Components/RenderingComponents/ConceptComponent";
+import GroupComponent from "./Components/RenderingComponents/GroupComponent";
+
+function selectRenderingComponent(componentType, id)
+{
+    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
+    switch (componentType) {
+        case "SKILL":
+            return <SkillComponent id = {id}/>
+        case "FACT" : 
+            return <FactComponent id = {id}/>
+        case "CONCEPT" : 
+            return <ConceptComponent id = {id}/>
+        case "GROUP" : 
+            return <GroupComponent id = {id}/>
+        default:
+            throw Error("Component Type Undefined , Cannot Render Component without knowing which component type to render")
+            
+    }
+
+
+    
+}
+
 
 export function RootContainer({ children, ContainerName }) {
 
@@ -79,33 +100,50 @@ export function RootContainer({ children, ContainerName }) {
 
         let droppingElementData = JSON.parse(e.dataTransfer.getData("application/x.droppingElementData"));
 
+        try {
+            let renderingComponent = selectRenderingComponent(droppingElementData.elementData.componentType, id)
+            console.log(renderingComponent)
+    
+            dispatch({
+                type: "ADD_NON_ROOT_CONTAINER_INTO_ROOT_CONTAINER", payload: {
+                    
+                    // Identifier Data 
+                    id: id,
+                    containerName: state.rootContainer.containerName,
+                    parent: [state.rootContainer.containerName, id],
 
-        dispatch({
-            type: "ADD_NON_ROOT_CONTAINER_INTO_ROOT_CONTAINER", payload: {
-                id: id,
+                    // Position Data
+                    x: XPosition,
+                    lastX: XPosition,
+    
+                    y: YPosition,
+                    lastY: YPosition,
+    
+                    // Dimension Data
+                    w: droppingElementData.w,
+                    lastW: droppingElementData.w,
+    
+                    h: droppingElementData.h,
+                    lastH: droppingElementData.h,
+    
+                    //Element Data
+                    elementData : droppingElementData.elementData,
+                    
+                    children: {}
+                }
+            });
+    
+            dispatch({
+                type: "SET_ACTIVE_CONTAINER",
+                payload: id
+            });
 
-                x: XPosition,
-                lastX: XPosition,
 
-                y: YPosition,
-                lastY: YPosition,
-
-                w: droppingElementData.w,
-                lastW: droppingElementData.w,
-
-                h: droppingElementData.h,
-                lastH: droppingElementData.h,
-
-                containerName: state.rootContainer.containerName,
-                parent: [state.rootContainer.containerName, id],
-                children: {}
-            }
-        });
-
-        dispatch({
-            type: "SET_ACTIVE_CONTAINER",
-            payload: id
-        });
+        } catch (error) {
+            console.log(error)        
+        }
+        
+       
 
 
         e.stopPropagation();
@@ -117,7 +155,13 @@ export function RootContainer({ children, ContainerName }) {
     Object.keys(state.nonRootContainers).forEach(
         (keyy) => {
             //console.log(state.nonRootContainers[keyy])
-            let { id, x, y, w, h, containerName, parent } = state.nonRootContainers[keyy];
+        
+            let { id, x, y, w, h, containerName, parent, elementData } = state.nonRootContainers[keyy];
+            let renderingComponent = selectRenderingComponent(elementData.componentType, id)
+            
+            console.log("🚀 ~ file: RootContainer.js ~ line 161 ~ RootContainer ~ renderingComponent", renderingComponent)
+
+            
             let item = <NonRootContainer
                 key={id} //   id = {id}
                 id={id}
@@ -128,7 +172,7 @@ export function RootContainer({ children, ContainerName }) {
                 ContainerClassName={id}
                 containerName={containerName}
                 parent={parent}
-                children={{}} />;
+                children={renderingComponent} />;
             renderArray.push(item);
         }
     );
@@ -154,7 +198,7 @@ export function RootContainer({ children, ContainerName }) {
                     payload: state.rootContainer.containerName
                 })}
             >
-               
+                <ComponentToolBar/>
                 <MapInteractionCSS
                     value = {mapState}
                     onChange={(value) => setMapState(value)}
@@ -168,6 +212,7 @@ export function RootContainer({ children, ContainerName }) {
                                 connector => <Connector
                                     start = {connector.start}
                                     end = {connector.end}
+                                    label = {connector.label}
                                 />
                             )
                         }

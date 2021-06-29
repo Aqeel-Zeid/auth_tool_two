@@ -7,6 +7,9 @@ import Moveable from 'react-moveable'
 
 export default function NonRootContainer({ w, h, x, y, id, containerName, parent, children }) {
 
+
+console.log("🚀 ~ file: NonRootContainer.jsx ~ line 9 ~ NonRootContainer ~ children", children)
+
   const [state, dispatch] = useContext(Context);
 
 
@@ -44,7 +47,7 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
 
   let moveSettings = <Moveable
     target={target}
-    resizable={true}
+    resizable={false}
     draggable={true}
     snappable={true}
     //bounds={calculateBounds(parent)}
@@ -349,9 +352,11 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
         }}
         onDrop={e => handleDrop(e)}
       >
-        <Slot id={id} />
         {
           renderArray
+        }
+        {
+          children
         }
       </div>
       {(state.activeContainer === id) ? moveSettings : <></>}
