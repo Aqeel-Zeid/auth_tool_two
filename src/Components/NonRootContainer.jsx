@@ -8,7 +8,7 @@ import Moveable from 'react-moveable'
 export default function NonRootContainer({ w, h, x, y, id, containerName, parent, children }) {
 
 
-console.log("🚀 ~ file: NonRootContainer.jsx ~ line 9 ~ NonRootContainer ~ children", children)
+//console.log("🚀 ~ file: NonRootContainer.jsx ~ line 9 ~ NonRootContainer ~ children", children)
 
   const [state, dispatch] = useContext(Context);
 
@@ -89,10 +89,10 @@ console.log("🚀 ~ file: NonRootContainer.jsx ~ line 9 ~ NonRootContainer ~ chi
 
         let childContainerBounds = document.querySelector(`#${id}`).getBoundingClientRect()
 
-        let translateProperties = container.getAttribute('transform');
+//        let translateProperties = container.getAttribute('transform');
 
 
-        console.log(translateProperties)
+       // console.log(translateProperties)
 
         dispatch(
           {

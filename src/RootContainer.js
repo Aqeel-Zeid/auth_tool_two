@@ -17,7 +17,7 @@ import GroupComponent from "./Components/RenderingComponents/GroupComponent";
 
 function selectRenderingComponent(componentType, id)
 {
-    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
+//    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
     switch (componentType) {
         case "SKILL":
             return <SkillComponent id = {id}/>
@@ -159,7 +159,7 @@ export function RootContainer({ children, ContainerName }) {
             let { id, x, y, w, h, containerName, parent, elementData } = state.nonRootContainers[keyy];
             let renderingComponent = selectRenderingComponent(elementData.componentType, id)
             
-            console.log("🚀 ~ file: RootContainer.js ~ line 161 ~ RootContainer ~ renderingComponent", renderingComponent)
+//            console.log("🚀 ~ file: RootContainer.js ~ line 161 ~ RootContainer ~ renderingComponent", renderingComponent)
 
             
             let item = <NonRootContainer

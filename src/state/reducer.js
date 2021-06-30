@@ -82,7 +82,7 @@ export default function Reducer(state, action) {
       updateTree(copy_of_state, path, "lastX", Math.ceil(action.payload.x));
       updateTree(copy_of_state, path, "lastY", Math.ceil(action.payload.y));
 
-      console.log(copy_of_state);
+//      console.log(copy_of_state);
 
       return { ...state, nonRootContainers: copy_of_state };
 
@@ -126,6 +126,34 @@ export default function Reducer(state, action) {
           ...state.connections,
           action.payload
         ]
+      };
+    case "REMOVE_CONNECTOR":
+
+        console.log(action.payload)
+        let index = state.connections.findIndex( conn => conn.start === action.payload.start && conn.end === action.payload.end  )
+        console.log(index)
+        let tempArray = state.connections;
+        tempArray.splice(index,1);
+        console.log(tempArray)
+        return {
+          ...state,
+        };
+    case "UPDATE_ELEMENT_DATA":
+      return {
+        ...state,
+        nonRootContainers : {
+          ...state.nonRootContainers,
+          [action.payload.id] : {
+            ...state.nonRootContainers[action.payload.id],
+            elementData : {
+              ...state.nonRootContainers[action.payload.id].elementData,
+              data : {
+                ...state.nonRootContainers[action.payload.id].elementData.data,
+                ...action.payload.data
+              }
+            }
+          }
+        }
       };
     case "REGISTER_DEPENDENCY":
       console.log(action.payload.source.split("-")[2])
