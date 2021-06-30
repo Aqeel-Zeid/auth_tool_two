@@ -23,8 +23,8 @@ export default function ComponentToolBar() {
                     {
                         dragImage : dragImage,
                         origin : "COMPONENT_TOOL_BAR",
-                        w : 20,
-                        h : 20,
+                        w : 40,
+                        h : 40,
                         elementData : {
                             authTool : "SKILL_TREE_AUTH_TOOL",
                             componentType : "SKILL",

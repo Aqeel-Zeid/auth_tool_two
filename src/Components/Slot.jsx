@@ -44,7 +44,10 @@ export default function Slot({id, slotIdentifier , label}) {
         }
         style = {
           {
-            padding:"0.5em", 
+            padding : "8px",
+            margin : "8px",
+            width : "16px",
+            height : "16px",
             backgroundColor : (state.sourceConnector === `connector-NW-${id}`) ? "coral" : "cornsilk" }}>
           C
       </div>
