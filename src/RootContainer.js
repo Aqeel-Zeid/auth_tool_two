@@ -6,27 +6,21 @@ import NonRootContainer from './Components/NonRootContainer';
 import { NavigatorBar } from "./NavigatorBar";
 import { MapInteractionCSS } from 'react-map-interaction';
 import ComponentToolBar from "./Components/ComponentToolBar";
+import ComponentBrowser from "./Components/ComponentBrowser";
 
 import Connector from "./Components/Connector";
 
-import SkillComponent from "./Components/RenderingComponents/SkillComponent";
-import SkillTreeComponent from "./Components/RenderingComponents/SkillTreeComponent";
-import FactComponent from "./Components/RenderingComponents/FactComponent";
-import ConceptComponent from "./Components/RenderingComponents/ConceptComponent";
-import GroupComponent from "./Components/RenderingComponents/GroupComponent";
+
+import CoursewarePageComponent from "./Components/RenderingComponents/CoursewarePageComponent/CoursewarePageComponent";
+
 
 function selectRenderingComponent(componentType, id)
 {
 //    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
     switch (componentType) {
-        case "SKILL":
-            return <SkillComponent id = {id}/>
-        case "FACT" : 
-            return <FactComponent id = {id}/>
-        case "CONCEPT" : 
-            return <ConceptComponent id = {id}/>
-        case "GROUP" : 
-            return <GroupComponent id = {id}/>
+        case "COURSEBOOK_PAGE":
+            return <CoursewarePageComponent id = {id}/>
+        
         default:
             throw Error("Component Type Undefined , Cannot Render Component without knowing which component type to render")
             
@@ -198,7 +192,7 @@ export function RootContainer({ children, ContainerName }) {
                     payload: state.rootContainer.containerName
                 })}
             >
-                <ComponentToolBar/>
+                <ComponentBrowser/>
                 <MapInteractionCSS
                     value = {mapState}
                     onChange={(value) => setMapState(value)}
@@ -206,7 +200,8 @@ export function RootContainer({ children, ContainerName }) {
                     disableZoom = { (state.rootContainer.containerName !== state.activeContainer) ? true : true  }
                     disablePan = { (state.rootContainer.containerName !== state.activeContainer) ? true : false  }
                 >
-                        {renderArray}
+                   
+                        {renderArray}   
                         {
                             state.connections.map(
                                 connector => <Connector

@@ -1,10 +1,10 @@
 import React, {useContext} from 'react'
-import {Context} from "../state/store"
+import {Context} from "../../../state/store"
 
 
 
 
-export default function Slot({id, slotIdentifier , label , type , colour}) {
+export default function FixedSlot({id, slotIdentifier , label , type , colour}) {
 
 
     const [state, dispatch] = useContext(Context);
@@ -43,10 +43,10 @@ export default function Slot({id, slotIdentifier , label , type , colour}) {
                   label : label  
                 } })
 
-                dispatch({ type: "REGISTER_DEPENDENCY", payload: {
-                  source : state.sourceConnector,
-                  target : e.target.id
-                } })
+                // dispatch({ type: "REGISTER_DEPENDENCY", payload: {
+                //   source : state.sourceConnector,
+                //   target : e.target.id
+                // } })
                 
                 dispatch({ type: "SET_SOURCE_CONNECTOR", payload: "NON_SELECTED" })
                 dispatch({ type: "SET_TARGET_CONNECTOR", payload: "NON_SELECTED" })
@@ -58,7 +58,7 @@ export default function Slot({id, slotIdentifier , label , type , colour}) {
         style = {
           {
             padding : "8px",
-            margin : "8px",
+            marginTop : "8px",
             width : "16px",
             height : "16px",
             backgroundColor : backgroundColour }}>

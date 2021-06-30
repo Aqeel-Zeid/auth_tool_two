@@ -97,6 +97,7 @@ export default function Reducer(state, action) {
       return { ...state, nonRootContainers: copy_of_state_2 };
 
     case "SET_ACTIVE_CONTAINER":
+
       return {
         ...state,
         activeContainer: action.payload,
@@ -120,13 +121,23 @@ export default function Reducer(state, action) {
         },
       };
     case "ADD_CONNECTOR":
-      return {
-        ...state,
-        connections : [
-          ...state.connections,
-          action.payload
-        ]
-      };
+      let sourceType = action.payload.end.split("-")[1];
+      let targetType = action.payload.start.split("-")[1]
+      if(sourceType === targetType)
+      {
+        return {
+          ...state,
+          connections : [
+            ...state.connections,
+            action.payload
+          ]
+        };
+      }
+      else
+      {
+         return state
+      }
+
     case "REMOVE_CONNECTOR":
 
         console.log(action.payload)

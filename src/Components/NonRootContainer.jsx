@@ -50,7 +50,7 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
 
   let moveSettings = <Moveable
     target={target}
-    resizable={false}
+    resizable={true}
     draggable={true}
     snappable={true}
     //bounds={calculateBounds(parent)}
@@ -339,7 +339,7 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
       <div // This is the base of non-root container
         style={{ 
           padding: "1em",
-          backgroundColor: getRandomColor(),
+         // backgroundColor: getRandomColor(),
           width: `${gridUnit * w}px`,
           height: `${gridUnit * h}px`,
           position: "absolute",
@@ -351,7 +351,7 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
         id={id}
         onClick={(e) => {
           dispatch({ type: "SET_ACTIVE_CONTAINER", payload: e.target.id })
-          e.stopPropagation()
+          e.stopPropagation();
         }}
         onDrop={e => handleDrop(e)}
       >
