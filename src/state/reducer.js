@@ -130,14 +130,63 @@ export default function Reducer(state, action) {
     case "REMOVE_CONNECTOR":
 
         console.log(action.payload)
+        // Remove Connectors 
         let index = state.connections.findIndex( conn => conn.start === action.payload.start && conn.end === action.payload.end  )
         console.log(index)
         let tempArray = state.connections;
         tempArray.splice(index,1);
         console.log(tempArray)
+        // Remove Dependency Array
         return {
           ...state,
         };
+    case "REMOVE_NODE":
+          console.log(action.payload);
+          //Remove Connections 
+          let tempConnectionArray = state.connections;
+
+          for (let index = 0; index < tempConnectionArray.length; index++) {
+            const element = tempConnectionArray[index];
+            //Get the start and End Node Ids
+            let sourceId = element.end.split("-")[2];
+            let targetID = element.start.split("-")[2]
+            if(sourceId === action.payload || targetID === action.payload )
+            {
+                console.log(element)
+                tempConnectionArray.splice(index,1)
+            }
+          }
+          //Remove From All Dependencies
+          let tempNodeArray = state.nonRootContainers;
+
+          for (const item in tempNodeArray) {
+            //console.log(tempNodeArray[item])
+            let dependencyArray = tempNodeArray[item].elementData.data.dependencies
+
+            console.log("🚀 ~ file: reducer.js ~ line 165 ~ Reducer ~ dependencyArray", dependencyArray)
+            for (let index = 0; index < dependencyArray.length; index++) {
+              const element = dependencyArray[index];
+              if(element === state.nonRootContainers[action.payload].elementData.data.name)
+              {
+                dependencyArray.splice(index,1)
+              }
+            }
+
+          }
+
+          console.log(tempNodeArray)
+
+          // Remove From NonRootContainers
+
+          delete tempNodeArray[action.payload]
+
+
+          return {
+            ...state,
+            nonRootContainers : tempNodeArray,
+            connections : tempConnectionArray
+          };
+      
     case "UPDATE_ELEMENT_DATA":
       return {
         ...state,

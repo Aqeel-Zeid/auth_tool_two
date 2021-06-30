@@ -336,8 +336,8 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
 
   return (
     <>
-      <div
-        style={{
+      <div // This is the base of non-root container
+        style={{ 
           padding: "1em",
           backgroundColor: getRandomColor(),
           width: `${gridUnit * w}px`,

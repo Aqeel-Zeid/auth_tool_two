@@ -35,8 +35,6 @@ export default function Slot({id, slotIdentifier , label}) {
               
               dispatch({ type: "SET_SOURCE_CONNECTOR", payload: "NON_SELECTED" })
               dispatch({ type: "SET_TARGET_CONNECTOR", payload: "NON_SELECTED" })
-              
-
 
             }
             e.stopPropagation()

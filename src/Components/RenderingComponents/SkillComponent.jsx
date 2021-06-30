@@ -7,6 +7,27 @@ import {Context} from "../../state/store"
 
 export default function SkillComponent({id}) {
     
+    let data = {
+        "sdasdasdcw" : {
+            name : "skill 1",
+            type : "skill/concept/fact/group",
+            description : "",
+            dependencies : [
+                "skill 2",
+                ""
+            ]
+        },
+        "vewsdvwervwev" : {
+            name : "skill 2",
+            type : "",
+            description : "",
+            dependencies : [
+                "Skill Name",
+                "Skill Name 2"
+            ]
+        },
+    }
+
 
     const [state, dispatch] = useContext(Context)
 
@@ -31,7 +52,7 @@ export default function SkillComponent({id}) {
                     <label>Name</label>
 
                     <br/>
-                        <button onClick = { () => console.log("Clicked Button")}>Click Me</button>
+                        <button onClick = { () => dispatch({type : "REMOVE_NODE" , payload : id})}>Delete Me</button>
                     <br/>
                     
                     <input
@@ -68,3 +89,5 @@ export default function SkillComponent({id}) {
         </div>
     )
 }
+
+
