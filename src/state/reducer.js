@@ -108,10 +108,18 @@ export default function Reducer(state, action) {
           sourceConnector : action.payload,
         };
     case "SET_TARGET_CONNECTOR":
-          return {
-            ...state,
-            targetConnector : action.payload,
-          };
+          if(state.sourceConnector !== action.payload)
+          {
+            return {
+              ...state,
+              targetConnector : action.payload,
+            };
+          }
+          else
+          {
+            return state
+          }
+         
     case "SET_GRID_SIZE":
       return {
         ...state,
@@ -123,6 +131,13 @@ export default function Reducer(state, action) {
     case "ADD_CONNECTOR":
       let sourceType = action.payload.end.split("-")[1];
       let targetType = action.payload.start.split("-")[1]
+      if(action.payload.start === action.payload.end)
+      {
+        return {
+          ...state,
+          targetConnector : "NON_SELECTED"
+        }
+      }
       if(sourceType === targetType)
       {
         return {

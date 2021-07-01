@@ -12,15 +12,17 @@ import Connector from "./Components/Connector";
 
 
 import CoursewarePageComponent from "./Components/RenderingComponents/CoursewarePageComponent/CoursewarePageComponent";
+import CoursewarePageAction from "./Components/RenderingComponents/CoursewarePageActions/coursewarePageAction";
+//COURSEBOOK_PAGE_ACTION
 
-
-function selectRenderingComponent(componentType, id)
+function selectRenderingComponent(componentType, id , elementData)
 {
 //    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
     switch (componentType) {
         case "COURSEBOOK_PAGE":
-            return <CoursewarePageComponent id = {id}/>
-        
+            return <CoursewarePageComponent id = {id} elementData = {elementData}/>
+        case "COURSEBOOK_PAGE_ACTION":
+                return <CoursewarePageAction id = {id} elementData = {elementData}/>
         default:
             throw Error("Component Type Undefined , Cannot Render Component without knowing which component type to render")
             
@@ -95,7 +97,7 @@ export function RootContainer({ children, ContainerName }) {
         let droppingElementData = JSON.parse(e.dataTransfer.getData("application/x.droppingElementData"));
 
         try {
-            let renderingComponent = selectRenderingComponent(droppingElementData.elementData.componentType, id)
+            let renderingComponent = selectRenderingComponent(droppingElementData.elementData.componentType, id , droppingElementData.elementData)
             console.log(renderingComponent)
     
             dispatch({
@@ -151,7 +153,7 @@ export function RootContainer({ children, ContainerName }) {
             //console.log(state.nonRootContainers[keyy])
         
             let { id, x, y, w, h, containerName, parent, elementData } = state.nonRootContainers[keyy];
-            let renderingComponent = selectRenderingComponent(elementData.componentType, id)
+            let renderingComponent = selectRenderingComponent(elementData.componentType, id , elementData)
             
 //            console.log("🚀 ~ file: RootContainer.js ~ line 161 ~ RootContainer ~ renderingComponent", renderingComponent)
 
@@ -193,10 +195,11 @@ export function RootContainer({ children, ContainerName }) {
                 })}
             >
                 <ComponentBrowser/>
+                <div className = "outsideDraggableArea"></div>
                 <MapInteractionCSS
                     value = {mapState}
                     onChange={(value) => setMapState(value)}
-                    showControls = {true}
+                    showControls = {false}
                     disableZoom = { (state.rootContainer.containerName !== state.activeContainer) ? true : true  }
                     disablePan = { (state.rootContainer.containerName !== state.activeContainer) ? true : false  }
                 >

@@ -18,6 +18,7 @@ export default function DroppableElement({ origin, droppingElementData, children
             //style={{ padding: "1em", marginLeft: "1em", marginRight: "1em", backgroundColor: "bisque" }}
             draggable={true}
             onDragStart={e => {
+                console.log("Drag Start")
                 e.dataTransfer.dropEffect = "copy";
                 var img = new Image();
                 img.src = dragImage;

@@ -13,6 +13,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 201;
 }
 .bottom {
   grid-area: 3 / 2 / 4 / 3;
@@ -20,6 +21,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  z-index: 201;
 }
 .right {
   grid-area: 2 / 3 / 3 / 4;
@@ -27,6 +29,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 201;
 }
 .center {
   grid-area: 2 / 2 / 3 / 3;
@@ -34,4 +37,5 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  
 }

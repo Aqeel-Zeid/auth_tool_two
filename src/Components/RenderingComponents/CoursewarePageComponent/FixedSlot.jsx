@@ -4,7 +4,7 @@ import {Context} from "../../../state/store"
 
 
 
-export default function FixedSlot({id, slotIdentifier , label , type , colour}) {
+export default function FixedSlot({id, slotIdentifier , label , type , colour , setshowToolTip , setToolTipCoordinates}) {
 
 
     const [state, dispatch] = useContext(Context);
@@ -28,6 +28,22 @@ export default function FixedSlot({id, slotIdentifier , label , type , colour}) 
     return (
         <div
           id = {`connector-${slotIdentifier}-${id}`} 
+          onMouseOver = {
+              (e) => {
+                  //console.log("Mose Over" , (e.pageY - e.target.offsetTop) , e.pageX - e.target.offsetLeft);
+                  setToolTipCoordinates({x:  e.pageX , y : e.pageY  })
+                  let hoverTimer = setTimeout( 
+                    () => {setshowToolTip(true)}  
+                    , 1000)
+              }
+          }
+   
+          onDoubleClick = {
+              () => {
+                setshowToolTip(true)
+              }
+          }
+
           onClick = {
             (e) => {
               if(state.sourceConnector === "NON_SELECTED")
@@ -54,6 +70,7 @@ export default function FixedSlot({id, slotIdentifier , label , type , colour}) 
               }
               e.stopPropagation()
             }
+            
         }
         style = {
           {

@@ -33,7 +33,7 @@ export default function ComponentBrowser() {
                         h : 60,
                         elementData : {
                             authTool : "COURSEWARE_AUTH_TOOL",
-                            componentType : "COURSEBOOK_PAGE",
+                            componentType : "COURSEBOOK_PAGE", // COURSEBOOK_VIDEO oR COURSEBOOK_ASSESSMENT
                             data : {
                                 type : "coursebook_page",
                                 name : "Coursebook Page name ",
