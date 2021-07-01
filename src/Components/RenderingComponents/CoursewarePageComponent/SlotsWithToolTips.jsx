@@ -81,58 +81,64 @@ function ActionList({ id, elementData }) {
 
     const [renderComponents, setRenderComponents] = useState([])
 
-    useEffect(() => {
+    try {
+        useEffect(() => {
 
-        let tempArray = [];
-        if (elementData.data.elementData.actions !== null && elementData.data.elementData.actions !== undefined) {
-
-            elementData.data.elementData.actions.map(
-                actions => {
-                    console.log(actions)
-                    tempArray.push(
-                        <DroppableElement
-                            key = {`${actions.type}-${actions.value}`}
-                            origin="COMPONENT_TOOLBAR"
-                            style={{
-                                width: "100%",
-                                marginTop: "8px",
-                                marginBottom: "8px",
-                                backgroundColor: "wheat"
-                            }}
-                            droppingElementData={{
-                                dragImage: dragImage,
-                                w: 60,
-                                h: 20,
-                                elementData: {
-                                    authTool: "COURSEWARE_AUTH_TOOL",
-                                    componentType: "COURSEBOOK_PAGE_ACTION", // COURSEBOOK_VIDEO oR COURSEBOOK_ASSESSMENT
-                                    data: {
-                                        type: "COURSEBOOK_PAGE_ACTION",
-                                        name: `${actions.type} to ${actions.value}`,
-                                        belongsTo: elementData.data.name
+            let tempArray = [];
+            if (elementData.data.elementData.actions !== null && elementData.data.elementData.actions !== undefined) {
+    
+                elementData.data.elementData.actions.map(
+                    actions => {
+                        console.log(actions)
+                        tempArray.push(
+                            <DroppableElement
+                                key = {`${actions.type}-${actions.value}`}
+                                origin="COMPONENT_TOOLBAR"
+                                style={{
+                                    width: "100%",
+                                    marginTop: "8px",
+                                    marginBottom: "8px",
+                                    backgroundColor: "wheat"
+                                }}
+                                droppingElementData={{
+                                    dragImage: dragImage,
+                                    w: 60,
+                                    h: 20,
+                                    elementData: {
+                                        authTool: "COURSEWARE_AUTH_TOOL",
+                                        componentType: "COURSEBOOK_PAGE_ACTION", // COURSEBOOK_VIDEO oR COURSEBOOK_ASSESSMENT
+                                        data: {
+                                            type: "COURSEBOOK_PAGE_ACTION",
+                                            name: `${actions.type} to ${actions.value}`,
+                                            belongsTo: elementData.data.name
+                                        }
                                     }
-                                }
-                            }}
-                        >
-                            <div
-                                style={{ padding: "8px", width: "90%", backgroundColor: "whitesmoke" }}
+                                }}
                             >
-                                {`${actions.type} ${actions.value}`}
-                            </div>
+                                <div
+                                    style={{ padding: "8px", width: "90%", backgroundColor: "whitesmoke" }}
+                                >
+                                    {`${actions.type} ${actions.value}`}
+                                </div>
+    
+                            </DroppableElement>
+                        )
+                    }
+                )
+    
+                setRenderComponents(tempArray)
+    
+            }
+    
+            
+    
+        }, [elementData.data.elementData.actions.length])
+    
+    } catch (error) {
+        console.log(error)
+    }
 
-                        </DroppableElement>
-                    )
-                }
-            )
-
-            setRenderComponents(tempArray)
-
-        }
-
-        
-
-    }, [elementData.data.elementData.actions.length])
-
+   
     return (
         <div>
             ACTION LIST {`${id}`}
