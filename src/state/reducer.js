@@ -165,6 +165,7 @@ export default function Reducer(state, action) {
         // Remove Dependency Array
         return {
           ...state,
+          connections : tempArray
         };
     case "REMOVE_NODE":
           console.log(action.payload);

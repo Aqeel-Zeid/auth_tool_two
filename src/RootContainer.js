@@ -3,28 +3,33 @@ import { Context } from "./state/store";
 import NonRootContainer from './Components/NonRootContainer';
 
 
-import { NavigatorBar } from "./NavigatorBar";
+import AssessmentComponentBar from "./Components/AssessmentComponents/AssessmentComponentBar";
+
+import StepComponent from "./Components/AssessmentComponents/StepComponent";
+import Response from "./Components/AssessmentComponents/Response";
+import Message from "./Components/AssessmentComponents/Message";
+import Timer from "./Components/AssessmentComponents/Timer";
+import MessageAction from "./Components/AssessmentComponents/MessageAction";
+
 import { MapInteractionCSS } from 'react-map-interaction';
-import ComponentToolBar from "./Components/ComponentToolBar";
-import ComponentBrowser from "./Components/ComponentBrowser";
 
 import Connector from "./Components/Connector";
 
-
-import CoursewarePageComponent from "./Components/RenderingComponents/CoursewarePageComponent/CoursewarePageComponent";
-import CoursewarePageAction from "./Components/RenderingComponents/CoursewarePageActions/coursewarePageAction";
-import CoursewareSubPage from "./Components/RenderingComponents/SubPage/CoursewareSubPage";
 
 function selectRenderingComponent(componentType, id , elementData)
 {
 //    console.log("🚀 ~ file: RootContainer.js ~ line 15 ~ componentType", componentType)
     switch (componentType) {
-        case "COURSEBOOK_PAGE":
-            return <CoursewarePageComponent id = {id} elementData = {elementData}/>
-        case "COURSEBOOK_PAGE_ACTION":
-                return <CoursewarePageAction id = {id} elementData = {elementData}/>
-        case "COURSEBOOK_PAGE_SUB_PAGE":
-                return <CoursewareSubPage id = {id} elementData = {elementData}/>
+        case "STEP":
+            return <StepComponent id = {id} elementData = {elementData}/>
+        case "RESPONSE":
+            return <Response id = {id} elementData = {elementData}/>
+        case "MESSAGE":
+            return <Message id = {id} elementData = {elementData}/>
+        case "TIMER":
+            return <Timer id = {id} elementData = {elementData}/>
+        case "MESSAGE_ACTION" :
+            return <MessageAction id = {id} elementData = {elementData} />
         default:
             throw Error("Component Type Undefined , Cannot Render Component without knowing which component type to render")
             
@@ -193,7 +198,7 @@ export function RootContainer({ children, ContainerName }) {
                     payload: state.rootContainer.containerName
                 })}
             >
-                <ComponentBrowser/>
+                <AssessmentComponentBar/>                
                 <div className = "outsideDraggableArea"></div>
                 <MapInteractionCSS
                     value = {mapState}

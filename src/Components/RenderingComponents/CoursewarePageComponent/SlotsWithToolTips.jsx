@@ -48,7 +48,7 @@ export default function SlotsWithToolTips({ type, colour, id, gridclassName, ele
                     () => {
                         let hoverTimer = setTimeout(
                             () => { setshowToolTip(false) }
-                            , 1500)
+                            , 100)
                     }
                 }
             >
