@@ -7,7 +7,7 @@ import SlotsWithToolTips from './SlotsWithToolTips'
 import styles from "./gridStyles.css"
 import { useContext } from 'react'
 
-export default function CoursewarePageComponent({id}) {
+export default function CoursewarePageComponent({id, elementData}) {
 
     const [state,dispatch] = useContext(Context);
 
@@ -26,10 +26,33 @@ export default function CoursewarePageComponent({id}) {
                 )
             }
         } >
-            <SlotsWithToolTips type = "ACTION" colour = "LIGHT_BLUE" id = {id}  style = {{gridArea: "2 / 1 / 3 / 2"}} gridclassName = "right" />
+            <SlotsWithToolTips 
+                type = "ACTION" 
+                colour = "LIGHT_BLUE" 
+                id = {id}  
+                style = {{gridArea: "2 / 1 / 3 / 2"}} 
+                gridclassName = "right" 
+                elementData = {elementData}
+            />
             <CoursewarePageComponentNode style = {{gridArea: "2 / 2 / 3 / 3"}} gridclassName = "center" id = {id}/>
-            <SlotsWithToolTips type = "REACTION" colour = "HOT_PINK" id = {id} style = {{gridArea: "3 / 2 / 4 / 3"}} gridclassName = "left"/>
-            <SlotsWithToolTips type = "SUB_COMPONENTS" colour = "DEEP_BLUE" id = {id} style = {{gridArea: "2 / 3 / 3 / 4"}} gridclassName = "bottom"/>
+            <SlotsWithToolTips 
+                type = "REACTION" 
+                colour = "HOT_PINK" 
+                id = {id} 
+                style = {{gridArea: "3 / 2 / 4 / 3"}} 
+                gridclassName = "left"
+                elementData = {elementData}
+            />
+            <SlotsWithToolTips 
+                type = "SUB_COMPONENTS" 
+                colour = "DEEP_BLUE" 
+                id = {id} 
+                style = {{gridArea: "2 / 3 / 3 / 4"}} 
+                gridclassName = "bottom"
+                elementData = {elementData}
+                subComponents = {elementData.data.subComponents}
+                mainComponent = {elementData.data.name}
+            />
         </div>
     )
 }
