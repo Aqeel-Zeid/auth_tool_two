@@ -64,10 +64,10 @@ function renderToolTip(type, id) {
             return <ActionList id = {id}/>
       
         case "REACTION":
-            return <div> RE ACTION LIST {`${id}`} </div>
+            return <SubComponentList id = {id}/> 
       
         case "SUB_COMPONENTS":
-            return <div> SUB COMPONENET LIST {`${id}`} </div>
+            return <SubComponentList id = {id}/> 
        
         default:
             break;
@@ -96,8 +96,8 @@ function ActionList({id})
                             authTool : "COURSEWARE_AUTH_TOOL",
                             componentType : "COURSEBOOK_PAGE_ACTION", // COURSEBOOK_VIDEO oR COURSEBOOK_ASSESSMENT
                             data : {
-                                type : "coursebook_page_action",
-                                name : "Coursebook Page Action name",
+                                type : "COURSEBOOK_PAGE_ACTION",
+                                name : "Coursebook COURSEBOOK_PAGE_ACTION name",
                                 description : "default Description",
                                 belongsTo : "Coursebook Page name"
                             }
@@ -118,20 +118,45 @@ function ActionList({id})
 }
 
 
-// {/* <DroppableElement
-// droppingElementData = {{
-//    dragImage : dragImage,
-//    w : 60,
-//    h : 60,
-//    elementData : {
-//        authTool : "COURSEWARE_AUTH_TOOL",
-//        componentType : "COURSEBOOK_PAGE",
-//        data : {
-//            type : "coursebook_page",
-//            name : "Coursebook Page name ",
-//            description : "default Description",
-//        }
-//    }
-// }}
-// >
-// </DroppableElement> */}
+function SubComponentList({id})
+{
+   
+    return (
+        <div> 
+            SUB COMPONENT LIST {`${id}`} 
+            <DroppableElement
+                    origin = "COMPONENT_TOOLBAR"
+                    style = {{
+                        width : "100%",
+                        marginTop : "8px",
+                        marginBottom : "8px",
+                        backgroundColor : "wheat"
+                    }}
+                    droppingElementData = {{
+                        dragImage : dragImage,
+                        w : 60,
+                        h : 20,
+                        elementData : {
+                            authTool : "COURSEWARE_AUTH_TOOL",
+                            componentType : "COURSEBOOK_PAGE_SUB_PAGE", // COURSEBOOK_VIDEO oR COURSEBOOK_ASSESSMENT
+                            data : {
+                                type : "COURSEBOOK_PAGE_SUB_PAGE",
+                                name : "Coursebook COURSEBOOK_PAGE_SUB_PAGE name",
+                                description : "default Description",
+                                belongsTo : "Coursebook Page name"
+                            }
+                        }
+                    }}
+                >
+                     <div 
+                        style = {{padding : "8px" , width : "90%" , backgroundColor : "whitesmoke" }} 
+                    >
+                        Droppable SUB PAGE
+                    </div>
+
+                </DroppableElement>
+                  
+           
+        </div>
+    )
+}

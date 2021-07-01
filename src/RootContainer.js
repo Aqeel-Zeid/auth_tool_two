@@ -13,7 +13,7 @@ import Connector from "./Components/Connector";
 
 import CoursewarePageComponent from "./Components/RenderingComponents/CoursewarePageComponent/CoursewarePageComponent";
 import CoursewarePageAction from "./Components/RenderingComponents/CoursewarePageActions/coursewarePageAction";
-//COURSEBOOK_PAGE_ACTION
+import CoursewareSubPage from "./Components/RenderingComponents/SubPage/CoursewareSubPage";
 
 function selectRenderingComponent(componentType, id , elementData)
 {
@@ -23,13 +23,12 @@ function selectRenderingComponent(componentType, id , elementData)
             return <CoursewarePageComponent id = {id} elementData = {elementData}/>
         case "COURSEBOOK_PAGE_ACTION":
                 return <CoursewarePageAction id = {id} elementData = {elementData}/>
+        case "COURSEBOOK_PAGE_SUB_PAGE":
+                return <CoursewareSubPage id = {id} elementData = {elementData}/>
         default:
             throw Error("Component Type Undefined , Cannot Render Component without knowing which component type to render")
             
     }
-
-
-    
 }
 
 
