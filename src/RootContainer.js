@@ -102,8 +102,8 @@ export function RootContainer({ children, ContainerName }) {
       Math.ceil(YPosition / gridUnit)
     );
 
-    let XCoordinate = Math.floor(XPosition / gridUnit);
-    let YCoordinate = Math.floor((YPosition - container.offsetTop) / gridUnit);
+    let XCoordinate = Math.floor(XPosition / gridUnit) * gridUnit;
+    let YCoordinate = Math.floor((YPosition - container.offsetTop) / gridUnit) * gridUnit;
 
     if (XPosition < gridUnit) {
       XCoordinate = 0;
@@ -138,11 +138,11 @@ export function RootContainer({ children, ContainerName }) {
         parent: [state.rootContainer.containerName, id],
 
         // Position Data
-        x: XPosition,
-        lastX: XPosition,
+        x: XCoordinate,
+        lastX: XCoordinate,
 
-        y: YPosition,
-        lastY: YPosition,
+        y: YCoordinate,
+        lastY: YCoordinate,
 
         // Dimension Data
         w: droppingElementData.w,
@@ -170,31 +170,33 @@ export function RootContainer({ children, ContainerName }) {
 
   Object.keys(state.nonRootContainers).forEach((keyy) => {
     //console.log(state.nonRootContainers[keyy])
-    let { id, x, y, w, h, containerName, parent , elementData} =
-      state.nonRootContainers[keyy];
 
-    let renderingComponent = selectRenderingComponent(
+    let { id, x, y, w, h, containerName, parent, elementData } =
+      state.nonRootContainers[keyy];
+    if (id !== undefined) {
+      let renderingComponent = selectRenderingComponent(
         elementData.type,
         id,
         elementData,
         elementData.componentType
       );
 
-    let item = (
-      <NonRootContainer
-        key={id} //   id = {id}
-        id={id}
-        x={x}
-        y={y}
-        w={w}
-        h={h}
-        ContainerClassName={id}
-        containerName={containerName}
-        parent={parent}
-        children={renderingComponent}
-      />
-    );
-    renderArray.push(item);
+      let item = (
+        <NonRootContainer
+          key={id} //   id = {id}
+          id={id}
+          x={Math.ceil(x/gridUnit) * gridUnit}
+          y={Math.ceil(y/gridUnit) * gridUnit}
+          w={w}
+          h={h}
+          ContainerClassName={id}
+          containerName={containerName}
+          parent={parent}
+          children={renderingComponent}
+        />
+      );
+      renderArray.push(item);
+    }
   });
 
   const [mapState, setMapState] = useState({
@@ -232,7 +234,7 @@ export function RootContainer({ children, ContainerName }) {
             })
           }
         >
-            {renderArray}
+          {renderArray}
         </div>
         <div
           style={{
