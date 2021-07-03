@@ -349,7 +349,7 @@ export default function NonRootContainer({ w, h, x, y, id, containerName, parent
         }}
         onDrop={e => handleDrop(e)}
       >
-        <Slot id={id} />
+        {children}
         {
           renderArray
         }

@@ -3,7 +3,7 @@ import Reducer from "./reducer.js";
 
 const initialState = {
   rootContainer : {
-    gridUnit: 8 ,
+    gridUnit: 50 ,
     containerName : "RootContainer" 
   },   
   nonRootContainers: {},

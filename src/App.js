@@ -76,8 +76,6 @@ function App() {
   return (
     <Store>
       <>
-        <NavigatorBar />
-        <ToolBar />
         <RootContainer ContainerName="RootContainer" style = {{ zIndex : 10  }} />
       </>
     </Store>

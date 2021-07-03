@@ -1,3 +1,49 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+
+
+
+
+1. Skill-Tree Auth tool 
+    - UI 
+        - Skill Tree Node should appear 
+        - Methiod to extract all the data to send to the backend
+        - Save it to the Database 
+        - Rendering the elements based on the state 
+        - Load data on First page render
+        
+2. Courseware Auth 
+        - Start Node and End nodes should appear 
+        - Page Auth tool ???????
+        - New Courseware Component Button within the coursebook canvas 
+        - Add Buttons to open page editors
+        - Link the components  
+            /CoursebookCanvas/:coursebookName   -> coursebookcanvas for the relevant coursebook page
+            /CoursebookCanvas/:coursebookName/PageEditor/:PageName  -> pageEditor for the relavant pageEditor page
+            /CoursebookCanvas/:coursebookName/AssessmentEditor/:assessment_name  -> Opens the assessment Editor for that assessment inside coursebook page
+            /CoursebookCanvas/:coursebookName/AssessmentEditor/:assessment_name/step/PageEditor/:step_name ->   open's the page editor for the step of an assessment belongong to a coursebook page 
+            /CoursebookCanvas/:coursebookName/AssessmentEditor/:assessment_name/response/PageEditor/:response_name ->  open's the page editor for the response of an assessment belongong to a coursebook
+        - Save to the Database by extracting data
+        - Load data on first render
+        - Delete Nodes 
+
+3. AssessmentEditor
+      - Start Node and End nodes should appear 
+      - Open Page editor when clicked response or step 
+      - Add Buttons to open page editors
+      - Edit Timer , Response Names
+      - Design the routes and test them for compatibilit
+      - Save to the Database by extracting data
+      - Load data on first render
+
+4. Community Management
+      - Design the Database
+      - Design The logic 
+      - Design the presenting scenario 
+      - Design the routes 
+      - Write the routes in openAPI 3.0,
+      - Mock server with postman  
+      - Implement the routes in backend server
+      - Test within the postman
+      - Design the Slides

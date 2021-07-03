@@ -11,7 +11,7 @@ export default function DroppableElement({ origin, droppingElementData, children
     // droppingElementData -> h = initial height , w = initial width, dragImage = transparentimage that shows up on your curser location while you are dragging
     // Also can include properties which instruct which NonRootContainer type to render such as containerType etc.
 
-    const { dragImage  } = droppingElementData
+    //const { dragImage  } = droppingElementData
     
     return (
         <div
@@ -19,9 +19,9 @@ export default function DroppableElement({ origin, droppingElementData, children
             draggable={true}
             onDragStart={e => {
                 e.dataTransfer.dropEffect = "copy";
-                var img = new Image();
-                img.src = dragImage;
-                e.dataTransfer.setDragImage(img, 0, 0);
+                //var img = new Image();
+                //img.src = dragImage;
+                //e.dataTransfer.setDragImage(img, 0, 0);
                 e.dataTransfer.setData("application/x.origin", origin);
                 e.dataTransfer.setData("application/x.droppingElementData", JSON.stringify(droppingElementData));
             }}
