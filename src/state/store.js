@@ -6,8 +6,9 @@ const initialState = {
     gridUnit: 8 ,
     containerName : "RootContainer" 
   },   
-  nonRootContainers: {},
-  activeContainer : "",
+  nonRootContainers: {
+  },
+  activeContainer : "RootContainer",
   sourceConnector : "NON_SELECTED",
   targetConnector : "NON_SELECTED",
   connections : [] 

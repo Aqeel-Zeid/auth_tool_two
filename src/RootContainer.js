@@ -11,6 +11,8 @@ import dragImage from "./dragImage.png";
 import frame from "./frame.svg";
 
 import ComponentBrowser from "./Components/PageEditor/ComponentBrowser";
+import ComponentSettings from "./Components/ComponentSettings";
+
 
 import Connector from "./Components/Connector";
 
@@ -206,12 +208,13 @@ export function RootContainer({ children, ContainerName }) {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <div
           style={{
             backgroundColor: "blanchedalmond",
-            width: "30%",
+            width: "25%",
             maxWidth: "380px",
+            zIndex : 101
           }}
         >
           <ComponentBrowser />
@@ -222,6 +225,7 @@ export function RootContainer({ children, ContainerName }) {
             height: "100vh",
             boxSizing: "border-box",
             flexGrow: "6",
+            width: "50%",
           }}
           onDrop={(e) => handleDrop(e)}
           onDragOver={(e) => handleDragOver(e)}
@@ -240,9 +244,12 @@ export function RootContainer({ children, ContainerName }) {
           style={{
             backgroundColor: "burlywood",
             maxWidth: "400px",
-            width: "30%",
+            width: "25%",
+            zIndex : 101
           }}
-        ></div>
+        >
+          <ComponentSettings/>
+        </div>
       </div>
     </>
   );
